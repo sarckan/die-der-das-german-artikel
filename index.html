@@ -1,0 +1,3293 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deutsche Artikel Meisterklasse</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .card-flip {
+      perspective: 1000px;
+    }
+    .card-flip-inner {
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .card-flip:hover .card-flip-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      backface-visibility: hidden;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+      border-radius: 50%;
+      animation: fall 5s linear infinite;
+    }
+    @keyframes fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .rule-card {
+      transition: all 0.3s ease;
+    }
+    .rule-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    .progress-bar {
+      height: 8px;
+      transition: width 0.5s ease;
+    }
+    .memory-hack {
+      border-left: 4px solid;
+      transition: all 0.3s ease;
+    }
+    .memory-hack:hover {
+      transform: scale(1.02);
+    }
+    .learn-more-btn {
+      transition: all 0.3s ease;
+      opacity: 0.8;
+    }
+    .learn-more-btn:hover {
+      opacity: 1;
+      transform: translateX(5px);
+    }
+    .flashcard {
+      perspective: 1000px;
+      height: 300px;
+    }
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+    .flashcard.flipped .flashcard-inner {
+      transform: rotateY(180deg);
+    }
+    .flashcard-front, .flashcard-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .flashcard-back {
+      transform: rotateY(180deg);
+    }
+    .suffix-card {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .suffix-card:hover {
+      transform: scale(1.05);
+    }
+    .suffix-card.selected {
+      box-shadow: 0 0 0 3px currentColor;
+    }
+    .suffix-card.correct {
+      background-color: rgba(74, 222, 128, 0.2);
+    }
+    .suffix-card.incorrect {
+      background-color: rgba(248, 113, 113, 0.2);
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .example-card {
+      transition: all 0.3s ease;
+    }
+    .example-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .translation {
+      font-style: italic;
+      color: #666;
+      font-size: 0.9em;
+      margin-top: 4px;
+    }
+    @media (min-width: 768px) {
+      .learn-more-btn {
+        display: none;
+      }
+      .more-content {
+        display: block !important;
+      }
+    }
+    /* New styles for games */
+    .game-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    }
+    .game-option {
+      transition: all 0.2s ease;
+    }
+    .game-option:hover {
+      transform: scale(1.03);
+    }
+    .game-option.correct {
+      background-color: rgba(74, 222, 128, 0.3) !important;
+      border-color: rgba(74, 222, 128, 0.7) !important;
+    }
+    .game-option.incorrect {
+      background-color: rgba(248, 113, 113, 0.3) !important;
+      border-color: rgba(248, 113, 113, 0.7) !important;
+    }
+    .voice-btn {
+      transition: all 0.2s ease;
+    }
+    .voice-btn:hover {
+      transform: scale(1.1);
+    }
+    .memory-curve-item {
+      transition: all 0.3s ease;
+    }
+    .memory-curve-item:hover {
+      transform: translateX(5px);
+    }
+   /* Drag and Drop Styles */
+.draggable {
+  cursor: move;
+  transition: all 0.2s ease;
+}
+
+.draggable.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.dropzone {
+  border: 2px dashed #ccc;
+  transition: all 0.3s ease;
+  min-height: 100px;
+}
+
+.dropzone.highlight {
+  border-color: #8b5cf6;
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+.dropped-word {
+  margin: 0.25rem 0;
+  padding: 0.25rem 0.5rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.dropzone {
+  min-height: 100px;
+  transition: all 0.2s ease;
+}
+
+.dropzone.highlight {
+  transform: scale(1.02);
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.draggable.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+    /* Timer styles */
+    .timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #7c3aed;
+    }
+    /* Quick reference styles */
+    .quick-ref-item {
+      transition: all 0.2s ease;
+    }
+    .quick-ref-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-indigo-800 mb-4 flex items-center justify-center gap-3">
+        <i data-lucide="languages" class="w-10 h-10"></i>
+        Deutsche Artikel Meisterklasse
+      </h1>
+      <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+        Meistere "der", "die", "das" mit interaktiven Regeln, visuellen Merkhilfen und Beispielen aus der Praxis!
+        <div class="translation">"Der", "die", "das" artikllərini interaktiv qaydalar, vizual xatırlatmalar və praktiki nümunələrlə öyrənin!</div>
+      </p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex flex-wrap justify-center mb-8 gap-2">
+      <button class="tab-btn active px-6 py-3 rounded-lg bg-white shadow-md font-medium text-indigo-700" data-tab="die-tab">
+        <i data-lucide="venus" class="w-5 h-5 inline mr-2"></i> DIE
+      </button>
+      <button class="tab-btn px-6 py-3 rounded-lg bg-white shadow-md font-medium text-blue-700" data-tab="der-tab">
+        <i data-lucide="mars" class="w-5 h-5 inline mr-2"></i> DER
+      </button>
+      <button class="tab-btn px-6 py-3 rounded-lg bg-white shadow-md font-medium text-green-700" data-tab="das-tab">
+        <i data-lucide="baby" class="w-5 h-5 inline mr-2"></i> DAS
+      </button>
+      <button class="tab-btn px-6 py-3 rounded-lg bg-white shadow-md font-medium text-purple-700" data-tab="practice-tab">
+        <i data-lucide="gamepad-2" class="w-5 h-5 inline mr-2"></i> Übung
+      </button>
+    </div>
+
+    <!-- Tab Contents -->
+    <div class="tab-content active" id="die-tab">
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-pink-500 to-rose-500 p-6 text-white">
+          <div class="flex items-center gap-4">
+            <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+              <i data-lucide="venus" class="w-8 h-8"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold">DIE - Der weibliche Artikel</h2>
+              <p class="opacity-90">Deine weibliche Freundin für Personen, Objekte und Konzepte</p>
+              <div class="translation">Şəxslər, əşyalar və anlayışlar üçün qadın cinsi artiklı</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <!-- Introduction -->
+          <div class="bg-pink-50 rounded-xl p-5 border border-pink-200 mb-6">
+            <h3 class="font-bold text-pink-800 mb-3 flex items-center gap-2">
+              <i data-lucide="info" class="w-5 h-5"></i>
+              Einführung in "die"
+            </h3>
+            <p class="text-pink-700">
+              <span class="font-bold">"Die"</span> ist der feminine Artikel im Deutschen. Er wird für weibliche Personen, viele Objekte und bestimmte Wortendungen verwendet. 
+              Die meisten Nomen, die auf -e enden, sind feminin (80%). Alle Pluralformen verwenden "die".
+            </p>
+            <div class="translation">
+              <span class="font-bold">"Die"</span> alman dilində qadın cinsi artiklıdır. Qadın şəxslər, bir çox əşya və müəyyən söz sonluqları üçün istifadə olunur. 
+              -e ilə bitən adların çoxu (80%) qadın cinsindədir. Bütün cəm formaları "die" istifadə edir.
+            </div>
+          </div>
+          
+          <!-- Rule Sections with Expandable Details -->
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- People Rule -->
+            <div class="rule-card bg-pink-50 rounded-xl p-5 border border-pink-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-pink-100 text-pink-800 p-2 rounded-lg">
+                  <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-pink-800 mb-2">Personen & Berufe <div class="translation">Şəxslər və peşələr</div></h3>
+                  <p class="text-sm text-pink-700 mb-3">Alle Frauennamen, weibliche Berufe und weibliche Tiere verwenden "die".</p>
+                  <div class="translation">Bütün qadın adları, qadın peşələri və dişi heyvanlar "die" istifadə edir.</div>
+                  <button class="text-pink-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-pink-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Frau (die Frau) 👩 <div class="translation">qadın</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Mutter (die Mutter) 👩🍼 <div class="translation">ana</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Lehrerin (die Lehrerin) 👩🏫 <div class="translation">müəllimə</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Gans (die Gans) 🦢 <div class="translation">qaz (dişi)</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-pink-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Stell dir alle weiblichen Nomen mit einer pinken Schleife 🎀 vor - wenn es eine Person ist, ist es definitiv "die"!</p>
+                  <div class="translation">Bütün qadın cinsli adları çəhrayı lentlə 🎀 təsəvvür et - əgər bu bir şəxsdirsə, mütləq "die" olacaq!</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Endings Rule -->
+            <div class="rule-card bg-pink-50 rounded-xl p-5 border border-pink-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-pink-100 text-pink-800 p-2 rounded-lg">
+                  <i data-lucide="list" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-pink-800 mb-2">Wichtige Endungen <div class="translation">Vacib sonluqlar</div></h3>
+                  <p class="text-sm text-pink-700 mb-3">Die meisten Nomen mit diesen Endungen sind feminin:</p>
+                  <div class="translation">Bu sonluqlarla bitən adların çoxu qadın cinsindədir:</div>
+                  <button class="text-pink-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-pink-800 mb-1">Endungsliste: <div class="translation">Sonluq siyahısı:</div></h4>
+                  <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div class="flex items-center"><span class="text-pink-500 mr-2">•</span> -ung <div class="translation">(die Zeitung - qəzet)</div></div>
+                    <div class="flex items-center"><span class="text-pink-500 mr-2">•</span> -keit <div class="translation">(die Möglichkeit - imkan)</div></div>
+                    <div class="flex items-center"><span class="text-pink-500 mr-2">•</span> -heit <div class="translation">(die Freiheit - azadlıq)</div></div>
+                    <div class="flex items-center"><span class="text-pink-500 mr-2">•</span> -schaft <div class="translation">(die Freundschaft - dostluq)</div></div>
+                    <div class="flex items-center"><span class="text-pink-500 mr-2">•</span> -ion/-tion <div class="translation">(die Station - stansiya)</div></div>
+                    <div class="flex items-center"><span class="text-pink-500 mr-2">•</span> -tät <div class="translation">(die Universität - universitet)</div></div>
+                    <div class="flex items-center"><span class="text-pink-500 mr-2">•</span> -ei <div class="translation">(die Bäckerei - çörək sexi)</div></div>
+                    <div class="flex items-center"><span class="text-pink-500 mr-2">•</span> -ik <div class="translation">(die Musik - musiqi)</div></div>
+                  </div>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-pink-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Wohnung (Wohnung) 🏢 <div class="translation">mənzil</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Freiheit (Freiheit) 🕊️ <div class="translation">azadlıq</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Universität (Universität) 🎓 <div class="translation">universitet</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Musik (Musik) 🎶 <div class="translation">musiqi</div></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Objects Rule -->
+            <div class="rule-card bg-pink-50 rounded-xl p-5 border border-pink-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-pink-100 text-pink-800 p-2 rounded-lg">
+                  <i data-lucide="package" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-pink-800 mb-2">Objekte & Konzepte <div class="translation">Əşyalar və anlayışlar</div></h3>
+                  <p class="text-sm text-pink-700 mb-3">80% der unbelebten Nomen, die auf -e enden, sind feminin.</p>
+                  <div class="translation">-e ilə bitən cansız adların 80%-i qadın cinsindədir.</div>
+                  <button class="text-pink-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-pink-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Tasche (Tasche) 👜 <div class="translation">çanta</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Lampe (Lampe) 💡 <div class="translation">lampa</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Flasche (Flasche) 🍼 <div class="translation">şüşə</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Schule (Schule) 🏫 <div class="translation">məktəb</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-pink-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Stell dir Objekte, die auf -e enden, mit einer Prinzessinnenkrone 👑 vor - wenn es schick ist, ist es wahrscheinlich "die"!</p>
+                  <div class="translation">-e ilə bitən əşyaları şahzadə tacı 👑 ilə təsəvvür et - əgər zərif görünürsə, çox güman ki, "die" olacaq!</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Nature Rule -->
+            <div class="rule-card bg-pink-50 rounded-xl p-5 border border-pink-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-pink-100 text-pink-800 p-2 rounded-lg">
+                  <i data-lucide="leaf" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-pink-800 mb-2">Natur & Geografie <div class="translation">Təbiət və coğrafiya</div></h3>
+                  <p class="text-sm text-pink-700 mb-3">Die meisten Früchte, Blumen und Flüsse in Deutschland sind feminin.</p>
+                  <div class="translation">Ən çox meyvələr, çiçəklər və Almaniyadakı çaylar qadın cinsindədir.</div>
+                  <button class="text-pink-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-pink-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Banane (Banane) 🍌 <div class="translation">banan</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Rose (Rose) 🌹 <div class="translation">qızılgül</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Donau (Donau) 🌊 <div class="translation">Dunay çayı</div></li>
+                    <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Die Sonne (Sonne) ☀️ <div class="translation">günəş</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-pink-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Die Natur ist fürsorglich (feminin) - stell dir Mutter Natur vor, die sich um all diese "die"-Nomen kümmert 🌍</p>
+                  <div class="translation">Təbiət qayğıkeşdir (qadın cinsi) - bütün bu "die" adlarına qayğı göstərən Ana Təbiəti təsəvvür et 🌍</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Example Cards with Images -->
+          <h3 class="font-bold text-pink-800 mb-4 text-xl flex items-center gap-2">
+            <i data-lucide="image" class="w-5 h-5"></i>
+            Visuelle Beispiele <div class="translation">Vizual nümunələr</div>
+          </h3>
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-pink-100">
+              <img src="https://avatars.mds.yandex.net/i?id=864e23181c82adbd2b3c7632bb9fe310405653ee-4936102-images-thumbs&n=13" alt="Frau" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-pink-800">Die Frau <div class="translation">qadın</div></h4>
+                <p class="text-sm text-pink-600">Weibliche Personen → immer "die" <div class="translation">Qadın şəxslər → həmişə "die"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-pink-100">
+              <img src="https://avatars.mds.yandex.net/i?id=212cb9c98cb5470184bf339129d2ad4170a771c6-4860197-images-thumbs&n=13" alt="Universität" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-pink-800">Die Universität <div class="translation">universitet</div></h4>
+                <p class="text-sm text-pink-600">"-tät" Endung → immer "die" <div class="translation">"-tät" sonluğu → həmişə "die"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-pink-100">
+              <img src="https://avatars.mds.yandex.net/i?id=44f8a202e7e28ca84873feee235c8a86b081c80e-13197814-images-thumbs&n=13" alt="Banane" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-pink-800">Die Banane <div class="translation">banan</div></h4>
+                <p class="text-sm text-pink-600">Früchte → meistens "die" <div class="translation">Meyvələr → çox vaxt "die"</div></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- More Example Cards -->
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-pink-100">
+              <img src="https://avatars.mds.yandex.net/i?id=6e023308d9cff1fd4f8ef32ebf1247a9ec052494-6018989-images-thumbs&n=13" alt="Musik" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-pink-800">Die Musik <div class="translation">musiqi</div></h4>
+                <p class="text-sm text-pink-600">"-ik" Endung → meistens "die" <div class="translation">"-ik" sonluğu → çox vaxt "die"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-pink-100">
+              <img src="https://avatars.mds.yandex.net/i?id=552c9979d65519ef16f0bd8ec17ba07edc137346-5575082-images-thumbs&n=13" alt="Zeitung" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-pink-800">Die Zeitung <div class="translation">qəzet</div></h4>
+                <p class="text-sm text-pink-600">"-ung" Endung → immer "die" <div class="translation">"-ung" sonluğu → həmişə "die"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-pink-100">
+              <img src="https://avatars.mds.yandex.net/i?id=4f81c566c1df33b93668f0ef276bb5530a2ba132-10411335-images-thumbs&n=13" alt="Freiheit" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-pink-800">Die Freiheit <div class="translation">azadlıq</div></h4>
+                <p class="text-sm text-pink-600">"-heit" Endung → immer "die" <div class="translation">"-heit" sonluğu → həmişə "die"</div></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Exceptions Section -->
+          <div class="bg-pink-100/50 rounded-xl p-5 border border-pink-200">
+            <h3 class="font-bold text-pink-800 mb-3 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+              Wichtige Ausnahmen <div class="translation">Vacib istisnalar</div>
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="bg-white rounded-lg p-3">
+                <h4 class="font-semibold text-pink-700 mb-1">Männliche Ausnahmen: <div class="translation">Kişi cinsi istisnalar:</div></h4>
+                <ul class="text-sm space-y-1">
+                  <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Der Junge (der Junge) 👦 <div class="translation">oğlan</div></li>
+                  <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Der Löwe (der Löwe) 🦁 <div class="translation">şir</div></li>
+                  <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Der See (der See) 🏞️ <div class="translation">göl</div></li>
+                </ul>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <h4 class="font-semibold text-pink-700 mb-1">Sächliche Ausnahmen: <div class="translation">Orta cins istisnalar:</div></h4>
+                <ul class="text-sm space-y-1">
+                  <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Das Ende (das Ende) 🏁 <div class="translation">son</div></li>
+                  <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Das Interesse (das Interesse) 💰 <div class="translation">maraq</div></li>
+                  <li class="flex items-center"><span class="text-pink-500 mr-2">•</span> Das Auge (das Auge) 👁️ <div class="translation">göz</div></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Memory Hacks Section -->
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="memory-hack bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl p-5 border-l-4 border-pink-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-pink-500 text-white p-2 rounded-lg">
+              <i data-lucide="lightbulb" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-pink-800">Pinke-Schleifen-Methode <div class="translation">Çəhrayı lent üsulu</div></h3>
+          </div>
+          <p class="text-sm text-pink-700">Visualisiere feminine Nomen mit einer pinken Schleife 🎀. Wenn du dir vorstellen kannst, dass sie eine tragen, ist es wahrscheinlich "die".</p>
+          <div class="translation">Qadın cinsli adları çəhrayı lentlə 🎀 təsəvvür et. Əgər onu geyindiyini təsəvvür edə bilirsənsə, çox güman ki, "die" olacaq.</div>
+        </div>
+        
+        <div class="memory-hack bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl p-5 border-l-4 border-pink-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-pink-500 text-white p-2 rounded-lg">
+              <i data-lucide="list" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-pink-800">Endungslied <div class="translation">Sonluq mahnısı</div></h3>
+          </div>
+          <p class="text-sm text-pink-700">Reim: "-ung, -heit, -keit, -schaft, die Artikelwahl ist voller Kraft!"</p>
+          <div class="translation">Qafiyə: "-ung, -heit, -keit, -schaft, die seçimi tam gücdür!"</div>
+        </div>
+        
+        <div class="memory-hack bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl p-5 border-l-4 border-pink-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-pink-500 text-white p-2 rounded-lg">
+              <i data-lucide="image" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-pink-800">Visuelle Assoziation <div class="translation">Vizual assosiasiya</div></h3>
+          </div>
+          <p class="text-sm text-pink-700">Stell dir alle "die"-Wörter in einem pinken Raum mit femininer Dekoration vor. Je stärker das Bild, desto besser wirst du dich erinnern!</p>
+          <div class="translation">Bütün "die" sözləri çəhrayı otaqda qadın dekorasiyası ilə təsəvvür et. Şəkil nə qədər güclü olarsa, yadda saxlamaq bir o qədər yaxşı olar!</div>
+        </div>
+      </div>
+      
+      <!-- Memory Curve Section -->
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <h3 class="text-xl font-bold text-indigo-800 mb-4 flex items-center gap-2">
+          <i data-lucide="brain" class="w-5 h-5"></i>
+          Vergessenskurve beachten! <div class="translation">Unutma əyrisinə diqqət yetirin!</div>
+        </h3>
+        <div class="space-y-4 text-gray-700">
+          <p>
+            Unser Gehirn vergisst schnell! Wiederhole das Gelernte nach diesen Intervallen für optimale Erinnerung:
+            <div class="translation">Beynimiz tez unudur! Optimal yadda saxlamaq üçün öyrəndiklərinizi bu intervallarla təkrarlayın:</div>
+          </p>
+          
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Tag <div class="translation">1. Gün</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 24 Stunden wiederholen <div class="translation">24 saatdan sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">3. Tag <div class="translation">3. Gün</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 3 Tagen wiederholen <div class="translation">3 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar-days" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Woche <div class="translation">1. Həftə</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 7 Tagen wiederholen <div class="translation">7 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Monat <div class="translation">1. Ay</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 30 Tagen wiederholen <div class="translation">30 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-indigo-100/50 p-4 rounded-lg mt-4">
+            <div class="flex items-start gap-3">
+              <i data-lucide="lightbulb" class="w-5 h-5 text-indigo-700 mt-1"></i>
+              <div>
+                <p class="text-indigo-800">
+                  💡 Tipp: Setze dir Erinnerungen in deinem Kalender für diese Wiederholungstermine!
+                  <div class="translation">💡 Məsləhət: Bu təkrarlama tarixləri üçün təqviminizə xatırlatmalar qurun!</div>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DER Tab Content -->
+    <div class="tab-content" id="der-tab">
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-500 p-6 text-white">
+          <div class="flex items-center gap-4">
+            <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+              <i data-lucide="mars" class="w-8 h-8"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold">DER - Der männliche Artikel</h2>
+              <p class="opacity-90">Stark und mächtig - für Männer, Wetter und mehr</p>
+              <div class="translation">Güclü və qüdrətli - kişilər, hava və daha çoxu üçün</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <!-- Introduction -->
+          <div class="bg-blue-50 rounded-xl p-5 border border-blue-200 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
+              <i data-lucide="info" class="w-5 h-5"></i>
+              Einführung in "der" <div class="translation">"Der" haqqında giriş</div>
+            </h3>
+            <p class="text-blue-700">
+              <span class="font-bold">"Der"</span> ist der maskuline Artikel im Deutschen. Er wird für männliche Personen, viele Berufe, Zeitangaben und bestimmte Wortendungen verwendet. 
+              Viele einsilbige Nomen sind maskulin. Die meisten Monate, Wochentage und Jahreszeiten verwenden "der".
+            </p>
+            <div class="translation">
+              <span class="font-bold">"Der"</span> alman dilində kişi cinsi artiklıdır. Kişi şəxslər, bir çox peşə, vaxt göstəriciləri və müəyyən söz sonluqları üçün istifadə olunur. 
+              Bir çox birhecalı adlar kişi cinsindədir. Ən çox aylar, həftənin günləri və fəsillər "der" istifadə edir.
+            </div>
+          </div>
+          
+          <!-- Rule Sections with Expandable Details -->
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- People Rule -->
+            <div class="rule-card bg-blue-50 rounded-xl p-5 border border-blue-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-blue-100 text-blue-800 p-2 rounded-lg">
+                  <i data-lucide="user" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-blue-800 mb-2">Personen & Berufe <div class="translation">Şəxslər və peşələr</div></h3>
+                  <p class="text-sm text-blue-700 mb-3">Alle Männernamen, männliche Tiere und männliche Berufe verwenden "der".</p>
+                  <div class="translation">Bütün kişi adları, kişi heyvanlar və kişi peşələri "der" istifadə edir.</div>
+                  <button class="text-blue-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-blue-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Mann (der Mann) 🧔 <div class="translation">kişi</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Vater (der Vater) 👨👧 <div class="translation">ata</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Lehrer (der Lehrer) 👨🏫 <div class="translation">müəllim</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Löwe (der Löwe) 🦁 <div class="translation">şir</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-blue-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Stell dir männliche Nomen mit einem Schnurrbart oder Bart 🧔 vor - wenn es Gesichtsbehaarung hat, ist es "der"!</p>
+                  <div class="translation">Kişi cinsli adları bığ və ya saqqal 🧔 ilə təsəvvür et - əgər üz tükü varsa, çox güman ki, "der" olacaq!</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Endings Rule -->
+            <div class="rule-card bg-blue-50 rounded-xl p-5 border border-blue-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-blue-100 text-blue-800 p-2 rounded-lg">
+                  <i data-lucide="list" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-blue-800 mb-2">Wichtige Endungen <div class="translation">Vacib sonluqlar</div></h3>
+                  <p class="text-sm text-blue-700 mb-3">Die meisten Nomen mit diesen Endungen sind maskulin:</p>
+                  <div class="translation">Bu sonluqlarla bitən adların çoxu kişi cinsindədir:</div>
+                  <button class="text-blue-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-blue-800 mb-1">Endungsliste: <div class="translation">Sonluq siyahısı:</div></h4>
+                  <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div class="flex items-center"><span class="text-blue-500 mr-2">•</span> -er <div class="translation">(der Lehrer - müəllim)</div></div>
+                    <div class="flex items-center"><span class="text-blue-500 mr-2">•</span> -ich <div class="translation">(der Teppich - xalça)</div></div>
+                    <div class="flex items-center"><span class="text-blue-500 mr-2">•</span> -ig <div class="translation">(der Honig - bal)</div></div>
+                    <div class="flex items-center"><span class="text-blue-500 mr-2">•</span> -ling <div class="translation">(der Lehrling - şagird)</div></div>
+                    <div class="flex items-center"><span class="text-blue-500 mr-2">•</span> -ismus <div class="translation">(der Optimismus - optimizm)</div></div>
+                    <div class="flex items-center"><span class="text-blue-500 mr-2">•</span> -or <div class="translation">(der Motor - mühərrik)</div></div>
+                    <div class="flex items-center"><span class="text-blue-500 mr-2">•</span> -us <div class="translation">(der Zirkus - sirk)</div></div>
+                    <div class="flex items-center"><span class="text-blue-500 mr-2">•</span> -ant <div class="translation">(der Elefant - fil)</div></div>
+                  </div>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-blue-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Computer (Computer) 💻 <div class="translation">kompüter</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Honig (Honig) 🍯 <div class="translation">bal</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Lehrling (Lehrling) 👨🔧 <div class="translation">şagird</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Motor (Motor) 🚗 <div class="translation">mühərrik</div></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Time Rule -->
+            <div class="rule-card bg-blue-50 rounded-xl p-5 border border-blue-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-blue-100 text-blue-800 p-2 rounded-lg">
+                  <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-blue-800 mb-2">Zeit & Wetter <div class="translation">Zaman və hava</div></h3>
+                  <p class="text-sm text-blue-700 mb-3">Monate, Wochentage, Jahreszeiten und die meisten Wetterphänomene sind maskulin.</p>
+                  <div class="translation">Aylar, həftənin günləri, fəsillər və ən çox hava hadisələri kişi cinsindədir.</div>
+                  <button class="text-blue-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-blue-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Januar (Januar) 🗓️ <div class="translation">yanvar</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Montag (Montag) 📅 <div class="translation">bazar ertəsi</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Sommer (Sommer) ☀️ <div class="translation">yay</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Regen (Regen) 🌧️ <div class="translation">yağış</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-blue-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Vater Zeit ist ein Mann ⏳ - alle zeitbezogenen Wörter sind maskulin "der"!</p>
+                  <div class="translation">Zaman Ata bir kişidir ⏳ - bütün zamanla əlaqəli sözlər kişi cinsində "der" olacaq!</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Nature Rule -->
+            <div class="rule-card bg-blue-50 rounded-xl p-5 border border-blue-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-blue-100 text-blue-800 p-2 rounded-lg">
+                  <i data-lucide="mountain" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-blue-800 mb-2">Natur & Geografie <div class="translation">Təbiət və coğrafiya</div></h3>
+                  <p class="text-sm text-blue-700 mb-3">Berge, Mineralien und Flüsse außerhalb Deutschlands sind maskulin.</p>
+                  <div class="translation">Dağlar, minerallar və Almaniyadan kənardakı çaylar kişi cinsindədir.</div>
+                  <button class="text-blue-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-blue-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Berg (Berg) ⛰️ <div class="translation">dağ</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Diamant (Diamant) 💎 <div class="translation">almaz</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Nil (Nil) 🌊 <div class="translation">Nil çayı</div></li>
+                    <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Der Pazifik (Pazifik) 🌏 <div class="translation">Sakit okean</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-blue-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Große, starke Naturmerkmale sind maskulin - stell sie dir mit Wanderschuhen 🥾 vor!</p>
+                  <div class="translation">Böyük, güclü təbiət xüsusiyyətləri kişi cinsindədir - onları gəzinti ayaqqabıları 🥾 ilə təsəvvür et!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Example Cards with Images -->
+          <h3 class="font-bold text-blue-800 mb-4 text-xl flex items-center gap-2">
+            <i data-lucide="image" class="w-5 h-5"></i>
+            Visuelle Beispiele <div class="translation">Vizual nümunələr</div>
+          </h3>
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-blue-100">
+              <img src="https://avatars.mds.yandex.net/i?id=edc3ac15b60ddb6227b01ef913815706e6f416f6-5869193-images-thumbs&n=13" alt="Mann" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-blue-800">Der Mann <div class="translation">kişi</div></h4>
+                <p class="text-sm text-blue-600">Männliche Personen → immer "der" <div class="translation">Kişi şəxslər → həmişə "der"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-blue-100">
+              <img src="https://avatars.mds.yandex.net/i?id=1aa70fa13607f9506bff1e479f39fcec3b43376d-5341506-images-thumbs&n=13" alt="Berg" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-blue-800">Der Berg <div class="translation">dağ</div></h4>
+                <p class="text-sm text-blue-600">Berge → meistens "der" <div class="translation">Dağlar → çox vaxt "der"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-blue-100">
+              <img src="https://avatars.mds.yandex.net/i?id=1667d3646595ac5fd82cd272688b729138b06bf2-5234404-images-thumbs&n=13" alt="Regen" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-blue-800">Der Regen <div class="translation">yağış</div></h4>
+                <p class="text-sm text-blue-600">Wetterphänomene → meistens "der" <div class="translation">Hava hadisələri → çox vaxt "der"</div></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- More Example Cards -->
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-blue-100">
+              <img src="https://avatars.mds.yandex.net/i?id=f63866590caf3432d553cb072c516b3658fa6cc0-5014030-images-thumbs&n=13" alt="Computer" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-blue-800">Der Computer <div class="translation">kompüter</div></h4>
+                <p class="text-sm text-blue-600">"-er" Endung → meistens "der" <div class="translation">"-er" sonluğu → çox vaxt "der"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-blue-100">
+              <img src="https://avatars.mds.yandex.net/i?id=1abad0c20210548b0f34334ceaaaa1cf1b31dd32-9065777-images-thumbs&n=13" alt="Honig" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-blue-800">Der Honig <div class="translation">bal</div></h4>
+                <p class="text-sm text-blue-600">"-ig" Endung → immer "der" <div class="translation">"-ig" sonluğu → həmişə "der"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-blue-100">
+              <img src="https://avatars.mds.yandex.net/i?id=dbe8bca9ee5069a74ebea3f08ab867922c611353-12764650-images-thumbs&n=13" alt="Motor" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-blue-800">Der Motor <div class="translation">mühərrik</div></h4>
+                <p class="text-sm text-blue-600">"-or" Endung → meistens "der" <div class="translation">"-or" sonluğu → çox vaxt "der"</div></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Exceptions Section -->
+          <div class="bg-blue-100/50 rounded-xl p-5 border border-blue-200">
+            <h3 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+              Wichtige Ausnahmen <div class="translation">Vacib istisnalar</div>
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="bg-white rounded-lg p-3">
+                <h4 class="font-semibold text-blue-700 mb-1">Weibliche Ausnahmen: <div class="translation">Qadın cinsi istisnalar:</div></h4>
+                <ul class="text-sm space-y-1">
+                  <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Die Brise (die Brise) 💨 <div class="translation">yüngül külək</div></li>
+                  <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Die Bora (die Bora) 🌬️ <div class="translation">şimal küləyi</div></li>
+                  <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Die Fahrt (die Fahrt) 🚗 <div class="translation">səyahət</div></li>
+                </ul>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <h4 class="font-semibold text-blue-700 mb-1">Sächliche Ausnahmen: <div class="translation">Orta cins istisnalar:</div></h4>
+                <ul class="text-sm space-y-1">
+                  <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Das Wetter (das Wetter) ⛅ <div class="translation">hava</div></li>
+                  <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Das Jahr (das Jahr) 📅 <div class="translation">il</div></li>
+                  <li class="flex items-center"><span class="text-blue-500 mr-2">•</span> Das Meer (das Meer) 🌊 <div class="translation">dəniz</div></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Memory Hacks Section -->
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="memory-hack bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl p-5 border-l-4 border-blue-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-blue-500 text-white p-2 rounded-lg">
+              <i data-lucide="zap" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-blue-800">Superhelden-Visualisierung <div class="translation">Superqəhrəman vizuallaşdırması</div></h3>
+          </div>
+          <p class="text-sm text-blue-700">Stell dir maskuline Nomen als Superhelden 💪 mit Umhängen vor. Je stärker das Bild, desto besser wirst du dich erinnern, dass sie "der" sind.</p>
+          <div class="translation">Kişi cinsli adları paltarlı superqəhrəmanlar 💪 kimi təsəvvür et. Şəkil nə qədər güclü olarsa, onların "der" olduğunu yadda saxlamaq bir o qədər yaxşı olar.</div>
+        </div>
+        
+        <div class="memory-hack bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl p-5 border-l-4 border-blue-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-blue-500 text-white p-2 rounded-lg">
+              <i data-lucide="calendar" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-blue-800">Zeit-Assoziation <div class="translation">Zaman assosiasiyası</div></h3>
+          </div>
+          <p class="text-sm text-blue-700">Erstelle einen mentalen Kalender 📅, auf dem alle Tage, Monate und Jahreszeiten kleine "der"-Abzeichen tragen.</p>
+          <div class="translation">Bütün günlərin, ayların və fəsillərin kiçik "der" nişanları daşıdığı zehni təqvim 📅 yaradın.</div>
+        </div>
+        
+        <div class="memory-hack bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl p-5 border-l-4 border-blue-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-blue-500 text-white p-2 rounded-lg">
+              <i data-lucide="music" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-blue-800">Endungslied <div class="translation">Sonluq mahnısı</div></h3>
+          </div>
+          <p class="text-sm text-blue-700">Reim: "-er, -ich, -ig, -ling, diese machen dein Deutsch zum König!"</p>
+          <div class="translation">Qafiyə: "-er, -ich, -ig, -ling, bunlar alman dilinizi kral edir!"</div>
+        </div>
+      </div>
+      
+      <!-- Memory Curve Section -->
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <h3 class="text-xl font-bold text-indigo-800 mb-4 flex items-center gap-2">
+          <i data-lucide="brain" class="w-5 h-5"></i>
+          Vergessenskurve beachten! <div class="translation">Unutma əyrisinə diqqət yetirin!</div>
+        </h3>
+        <div class="space-y-4 text-gray-700">
+          <p>
+            Unser Gehirn vergisst schnell! Wiederhole das Gelernte nach diesen Intervallen für optimale Erinnerung:
+            <div class="translation">Beynimiz tez unudur! Optimal yadda saxlamaq üçün öyrəndiklərinizi bu intervallarla təkrarlayın:</div>
+          </p>
+          
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Tag <div class="translation">1. Gün</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 24 Stunden wiederholen <div class="translation">24 saatdan sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">3. Tag <div class="translation">3. Gün</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 3 Tagen wiederholen <div class="translation">3 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar-days" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Woche <div class="translation">1. Həftə</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 7 Tagen wiederholen <div class="translation">7 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Monat <div class="translation">1. Ay</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 30 Tagen wiederholen <div class="translation">30 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-indigo-100/50 p-4 rounded-lg mt-4">
+            <div class="flex items-start gap-3">
+              <i data-lucide="lightbulb" class="w-5 h-5 text-indigo-700 mt-1"></i>
+              <div>
+                <p class="text-indigo-800">
+                  💡 Tipp: Setze dir Erinnerungen in deinem Kalender für diese Wiederholungstermine!
+                  <div class="translation">💡 Məsləhət: Bu təkrarlama tarixləri üçün təqviminizə xatırlatmalar qurun!</div>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAS Tab Content -->
+    <div class="tab-content" id="das-tab">
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-6 text-white">
+          <div class="flex items-center gap-4">
+            <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+              <i data-lucide="baby" class="w-8 h-8"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold">DAS - Der sächliche Artikel</h2>
+              <p class="opacity-90">Das neutrale Wunder - für junge Dinge, Konzepte und mehr</p>
+              <div class="translation">Neutral möcüzə - gənc şeylər, anlayışlar və daha çoxu üçün</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <!-- Introduction -->
+          <div class="bg-green-50 rounded-xl p-5 border border-green-200 mb-6">
+            <h3 class="font-bold text-green-800 mb-3 flex items-center gap-2">
+              <i data-lucide="info" class="w-5 h-5"></i>
+              Einführung in "das" <div class="translation">"Das" haqqında giriş</div>
+            </h3>
+            <p class="text-green-700">
+              <span class="font-bold">"Das"</span> ist der neutrale Artikel im Deutschen. Er wird für junge Dinge, Verkleinerungsformen, Metalle, Länder, Städte und bestimmte Wortendungen verwendet. 
+              Viele Nomen mit den Endungen -chen, -lein, -um, -ment sind neutral.
+            </p>
+            <div class="translation">
+              <span class="font-bold">"Das"</span> alman dilində orta cins artiklıdır. Gənc şeylər, kiçiltmə formaları, metallar, ölkələr, şəhərlər və müəyyən söz sonluqları üçün istifadə olunur. 
+              -chen, -lein, -um, -ment sonluqlu adların çoxu orta cinsdədir.
+            </div>
+          </div>
+          
+          <!-- Rule Sections with Expandable Details -->
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- Young Things Rule -->
+            <div class="rule-card bg-green-50 rounded-xl p-5 border border-green-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-green-100 text-green-800 p-2 rounded-lg">
+                  <i data-lucide="smile" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-green-800 mb-2">Junge Dinge <div class="translation">Gənc şeylər</div></h3>
+                  <p class="text-sm text-green-700 mb-3">Baby-Tiere, Kinder und Verkleinerungsformen verwenden "das".</p>
+                  <div class="translation">Körpə heyvanlar, uşaqlar və kiçiltmə formaları "das" istifadə edir.</div>
+                  <button class="text-green-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-green-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Baby (das Baby) 👶 <div class="translation">körpə</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Kind (das Kind) 🧒 <div class="translation">uşaq</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Kätzchen (das Kätzchen) 🐱 <div class="translation">pişik balası</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Mädchen (das Mädchen) 👧 <div class="translation">qız</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-green-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Stell dir alle sächlichen Nomen mit einem Schnuller 🍼 vor - wenn es jung oder klein ist, ist es "das"!</p>
+                  <div class="translation">Bütün orta cinsli adları əmzik 🍼 ilə təsəvvür et - əgər gənc və ya kiçikdirsə, "das" olacaq!</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Endings Rule -->
+            <div class="rule-card bg-green-50 rounded-xl p-5 border border-green-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-green-100 text-green-800 p-2 rounded-lg">
+                  <i data-lucide="list" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-green-800 mb-2">Wichtige Endungen <div class="translation">Vacib sonluqlar</div></h3>
+                  <p class="text-sm text-green-700 mb-3">Die meisten Nomen mit diesen Endungen sind sächlich:</p>
+                  <div class="translation">Bu sonluqlarla bitən adların çoxu orta cinsdədir:</div>
+                  <button class="text-green-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-green-800 mb-1">Endungsliste: <div class="translation">Sonluq siyahısı:</div></h4>
+                  <div class="grid grid-cols-2 gap-2 text-sm">
+                    <div class="flex items-center"><span class="text-green-500 mr-2">•</span> -chen <div class="translation">(das Mädchen - qız)</div></div>
+                    <div class="flex items-center"><span class="text-green-500 mr-2">•</span> -lein <div class="translation">(das Fräulein - xanım)</div></div>
+                    <div class="flex items-center"><span class="text-green-500 mr-2">•</span> -um <div class="translation">(das Museum - muzey)</div></div>
+                    <div class="flex items-center"><span class="text-green-500 mr-2">•</span> -ment <div class="translation">(das Instrument - alət)</div></div>
+                    <div class="flex items-center"><span class="text-green-500 mr-2">•</span> -nis <div class="translation">(das Zeugnis - şəhadətnamə)</div></div>
+                    <div class="flex items-center"><span class="text-green-500 mr-2">•</span> -tum <div class="translation">(das Eigentum - mülkiyyət)</div></div>
+                    <div class="flex items-center"><span class="text-green-500 mr-2">•</span> -o <div class="translation">(das Büro - ofis)</div></div>
+                    <div class="flex items-center"><span class="text-green-500 mr-2">•</span> -ma <div class="translation">(das Thema - mövzu)</div></div>
+                  </div>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-green-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Mädchen (Mädchen) 👧 <div class="translation">qız</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Museum (Museum) 🏛️ <div class="translation">muzey</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Instrument (Instrument) 🎻 <div class="translation">alət</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Büro (Büro) 🏢 <div class="translation">ofis</div></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Concepts Rule -->
+            <div class="rule-card bg-green-50 rounded-xl p-5 border border-green-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-green-100 text-green-800 p-2 rounded-lg">
+                  <i data-lucide="brain" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-green-800 mb-2">Konzepte & Abstraktes <div class="translation">Anlayışlar və mücərrəd</div></h3>
+                  <p class="text-sm text-green-700 mb-3">Farben, Sprachen und abstrakte Konzepte sind sächlich.</p>
+                  <div class="translation">Rənglər, dillər və mücərrəd anlayışlar orta cinsdədir.</div>
+                  <button class="text-green-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-green-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Rot (Rot) 🔴 <div class="translation">qırmızı</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Deutsch (Deutsch) 🇩🇪 <div class="translation">alman dili</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Glück (Glück) 😊 <div class="translation">xoşbəxtlik</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Wetter (Wetter) ⛅ <div class="translation">hava</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-green-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Abstrakte Konzepte sind wie Babys - nicht klar männlich oder weiblich, also sind sie "das" 🧠</p>
+                  <div class="translation">Mücərrəd anlayışlar körpələr kimidir - açıq-aşkar kişi və ya qadın deyil, ona görə də "das" olacaq 🧠</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Geography Rule -->
+            <div class="rule-card bg-green-50 rounded-xl p-5 border border-green-100">
+              <div class="flex items-start gap-3">
+                <div class="bg-green-100 text-green-800 p-2 rounded-lg">
+                  <i data-lucide="map" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-green-800 mb-2">Geografie & Technologie <div class="translation">Coğrafiya və texnologiya</div></h3>
+                  <p class="text-sm text-green-700 mb-3">Die meisten Länder, Städte und Lehnwörter sind sächlich.</p>
+                  <div class="translation">Ən çox ölkələr, şəhərlər və qəbz sözlər orta cinsdədir.</div>
+                  <button class="text-green-600 text-sm font-medium flex items-center learn-more-btn">
+                    Mehr erfahren <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="more-content mt-3 hidden">
+                <div class="bg-white/70 rounded-lg p-3 mb-3">
+                  <h4 class="font-semibold text-green-800 mb-1">Beispiele: <div class="translation">Nümunələr:</div></h4>
+                  <ul class="text-sm space-y-1">
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Berlin (Berlin) 🏙️ <div class="translation">Berlin</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Deutschland (Deutschland) 🇩🇪 <div class="translation">Almaniya</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Internet (Internet) 🌐 <div class="translation">internet</div></li>
+                    <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Das Hotel (Hotel) 🏨 <div class="translation">otel</div></li>
+                  </ul>
+                </div>
+                <div class="bg-white/70 rounded-lg p-3">
+                  <h4 class="font-semibold text-green-800 mb-1">Merkhilfe: <div class="translation">Xatırlatma:</div></h4>
+                  <p class="text-sm">Orte und neue Technologien sind neutrales Terrain - stell sie dir mit einem "das"-Label 🏷️ vor</p>
+                  <div class="translation">Yerlər və yeni texnologiyalar neytral ərazidir - onları "das" etiketi 🏷️ ilə təsəvvür et</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Example Cards with Images -->
+          <h3 class="font-bold text-green-800 mb-4 text-xl flex items-center gap-2">
+            <i data-lucide="image" class="w-5 h-5"></i>
+            Visuelle Beispiele <div class="translation">Vizual nümunələr</div>
+          </h3>
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-green-100">
+              <img src="https://avatars.mds.yandex.net/i?id=8cbe5d12b3f95f5e0ea683f7d785bfc80d2bf5f9-4466702-images-thumbs&n=13" alt="Mädchen" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-green-800">Das Mädchen <div class="translation">qız</div></h4>
+                <p class="text-sm text-green-600">"-chen" Endung → immer "das" <div class="translation">"-chen" sonluğu → həmişə "das"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-green-100">
+              <img src="https://avatars.mds.yandex.net/i?id=f6eea7888531f7ce81a5dcf80502a154c792297d-5752088-images-thumbs&n=13" alt="Buch" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-green-800">Das Buch <div class="translation">kitab</div></h4>
+                <p class="text-sm text-green-600">Viele einsilbige Nomen → "das" <div class="translation">Bir çox birhecalı adlar → "das"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-green-100">
+              <img src="https://avatars.mds.yandex.net/i?id=cdfb0500ba9b507fd791507624cc9c400c116d89-12498339-images-thumbs&n=13" alt="Hotel" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-green-800">Das Hotel <div class="translation">otel</div></h4>
+                <p class="text-sm text-green-600">Lehnwörter → meistens "das" <div class="translation">Qəbz sözlər → çox vaxt "das"</div></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- More Example Cards -->
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-green-100">
+              <img src="https://avatars.mds.yandex.net/i?id=c5e5212af50f5e2c667a3e8f18dc7ac7900371a4-5331782-images-thumbs&n=13" alt="Auto" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-green-800">Das Auto <div class="translation">avtomobil</div></h4>
+                <p class="text-sm text-green-600">"-o" Endung → meistens "das" <div class="translation">"-o" sonluğu → çox vaxt "das"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-green-100">
+              <img src="https://avatars.mds.yandex.net/i?id=ac06a59ed21d93d1705ea62719dc75c75289d8bf-5247089-images-thumbs&n=13" alt="Radio" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-green-800">Das Radio <div class="translation">radio</div></h4>
+                <p class="text-sm text-green-600">Lehnwörter → meistens "das" <div class="translation">Qəbz sözlər → çox vaxt "das"</div></p>
+              </div>
+            </div>
+            <div class="example-card bg-white rounded-lg overflow-hidden shadow-md border border-green-100">
+              <img src="https://avatars.mds.yandex.net/i?id=f41ca256c465124295378bfb2d9e00a0d9897641-9042494-images-thumbs&n=13" alt="Museum" class="w-full h-40 object-cover">
+              <div class="p-4">
+                <h4 class="font-bold text-green-800">Das Museum <div class="translation">muzey</div></h4>
+                <p class="text-sm text-green-600">"-um" Endung → immer "das" <div class="translation">"-um" sonluğu → həmişə "das"</div></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Exceptions Section -->
+          <div class="bg-green-100/50 rounded-xl p-5 border border-green-200">
+            <h3 class="font-bold text-green-800 mb-3 flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+              Wichtige Ausnahmen <div class="translation">Vacib istisnalar</div>
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4">
+              <div class="bg-white rounded-lg p-3">
+                <h4 class="font-semibold text-green-700 mb-1">Männliche Ausnahmen: <div class="translation">Kişi cinsi istisnalar:</div></h4>
+                <ul class="text-sm space-y-1">
+                  <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Der Phosphor (Phosphor) 🔥 <div class="translation">fosfor</div></li>
+                  <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Der Irrtum (Irrtum) ❌ <div class="translation">səhv</div></li>
+                  <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Der See (See) 🏞️ <div class="translation">göl</div></li>
+                </ul>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <h4 class="font-semibold text-green-700 mb-1">Weibliche Ausnahmen: <div class="translation">Qadın cinsi istisnalar:</div></h4>
+                <ul class="text-sm space-y-1">
+                  <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Die Firma (Firma) 🏢 <div class="translation">firma</div></li>
+                  <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Die Kamera (Kamera) 📷 <div class="translation">kamera</div></li>
+                  <li class="flex items-center"><span class="text-green-500 mr-2">•</span> Die Pizza (Pizza) 🍕 <div class="translation">pitsa</div></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Memory Hacks Section -->
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="memory-hack bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl p-5 border-l-4 border-green-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-green-500 text-white p-2 rounded-lg">
+              <i data-lucide="baby" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-green-800">Baby-Visualisierung <div class="translation">Körpə vizuallaşdırması</div></h3>
+          </div>
+          <p class="text-sm text-green-700">Stell dir alle "das"-Wörter als Babys 👶 mit Schnullern vor. Je stärker das Bild, desto besser wirst du dich erinnern!</p>
+          <div class="translation">Bütün "das" sözləri körpələr 👶 kimi təsəvvür et. Şəkil nə qədər güclü olarsa, yadda saxlamaq bir o qədər yaxşı olar!</div>
+        </div>
+        
+        <div class="memory-hack bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl p-5 border-l-4 border-green-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-green-500 text-white p-2 rounded-lg">
+              <i data-lucide="globe" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-green-800">Orts-Assoziation <div class="translation">Yer assosiasiyası</div></h3>
+          </div>
+          <p class="text-sm text-green-700">Stell dir alle Länder und Städte auf einer neutralen grauen Karte 🗺️ mit "das"-Beschriftung vor.</p>
+          <div class="translation">Bütün ölkələri və şəhərləri neytral boz xəritədə 🗺️ "das" yazısı ilə təsəvvür et.</div>
+        </div>
+        
+        <div class="memory-hack bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl p-5 border-l-4 border-green-400">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="bg-green-500 text-white p-2 rounded-lg">
+              <i data-lucide="music" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-bold text-green-800">Endungslied <div class="translation">Sonluq mahnısı</div></h3>
+          </div>
+          <p class="text-sm text-green-700">Reim: "-chen, -lein, -um, -ment, diese sind neutral, wie's der Himmel send't!"</p>
+          <div class="translation">Qafiyə: "-chen, -lein, -um, -ment, bunlar neytraldır, göyün göndərdiyi kimi!"</div>
+        </div>
+      </div>
+      
+      <!-- Memory Curve Section -->
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <h3 class="text-xl font-bold text-indigo-800 mb-4 flex items-center gap-2">
+          <i data-lucide="brain" class="w-5 h-5"></i>
+          Vergessenskurve beachten! <div class="translation">Unutma əyrisinə diqqət yetirin!</div>
+        </h3>
+        <div class="space-y-4 text-gray-700">
+          <p>
+            Unser Gehirn vergisst schnell! Wiederhole das Gelernte nach diesen Intervallen für optimale Erinnerung:
+            <div class="translation">Beynimiz tez unudur! Optimal yadda saxlamaq üçün öyrəndiklərinizi bu intervallarla təkrarlayın:</div>
+          </p>
+          
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Tag <div class="translation">1. Gün</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 24 Stunden wiederholen <div class="translation">24 saatdan sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">3. Tag <div class="translation">3. Gün</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 3 Tagen wiederholen <div class="translation">3 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar-days" class="w-5 h-5"></i>   
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Woche <div class="translation">1. Həftə</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 7 Tagen wiederholen <div class="translation">7 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="memory-curve-item bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+              <div class="flex items-center gap-3">
+                <div class="bg-indigo-100 text-indigo-800 p-2 rounded-full">
+                  <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-indigo-800">1. Monat <div class="translation">1. Ay</div></h4>
+                  <p class="text-sm text-indigo-700">Nach 30 Tagen wiederholen <div class="translation">30 gündən sonra təkrarlayın</div></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-indigo-100/50 p-4 rounded-lg mt-4">
+            <div class="flex items-start gap-3">
+              <i data-lucide="lightbulb" class="w-5 h-5 text-indigo-700 mt-1"></i>
+              <div>
+                <p class="text-indigo-800">
+                  💡 Tipp: Setze dir Erinnerungen in deinem Kalender für diese Wiederholungstermine!
+                  <div class="translation">💡 Məsləhət: Bu təkrarlama tarixləri üçün təqviminizə xatırlatmalar qurun!</div>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Tab Content -->
+    <div class="tab-content" id="practice-tab">
+      <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8">
+        <div class="bg-gradient-to-r from-purple-500 to-indigo-600 p-6 text-white">
+          <div class="flex items-center gap-4">
+            <div class="bg-white/20 p-3 rounded-full backdrop-blur-sm">
+              <i data-lucide="gamepad-2" class="w-8 h-8"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold">Übungen & Spiele</h2>
+              <p class="opacity-90">Teste dein Wissen mit interaktiven Übungen!</p>
+              <div class="translation">Biliklərinizi interaktiv məşqlərlə sınayın!</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <!-- Quick Reference -->
+          <div class="bg-white rounded-xl shadow-md p-5 mb-8">
+            <h3 class="font-bold text-purple-800 mb-3 flex items-center gap-2">
+              <i data-lucide="bookmark" class="w-5 h-5"></i>
+              Schnellreferenz: Artikelregeln <div class="translation">Tez istinad: Artikl qaydaları</div>
+            </h3>
+            
+            <div class="grid md:grid-cols-3 gap-4">
+              <!-- DER Reference -->
+              <div class="bg-blue-50 rounded-lg p-4">
+                <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-1">
+                  <i data-lucide="mars" class="w-4 h-4"></i> DER
+                </h4>
+                <ul class="text-xs space-y-1 text-blue-700">
+                  <li class="flex items-start"><span class="text-blue-500 mr-1">•</span> Männliche Personen</li>
+                  <li class="flex items-start"><span class="text-blue-500 mr-1">•</span> Tage, Monate, Jahreszeiten</li>
+                  <li class="flex items-start"><span class="text-blue-500 mr-1">•</span> Wetterphänomene</li>
+                  <li class="flex items-start"><span class="text-blue-500 mr-1">•</span> Endungen: -er, -ich, -ig, -ling</li>
+                </ul>
+              </div>
+              
+              <!-- DIE Reference -->
+              <div class="bg-pink-50 rounded-lg p-4">
+                <h4 class="font-bold text-pink-800 mb-2 flex items-center gap-1">
+                  <i data-lucide="venus" class="w-4 h-4"></i> DIE
+                </h4>
+                <ul class="text-xs space-y-1 text-pink-700">
+                  <li class="flex items-start"><span class="text-pink-500 mr-1">•</span> Weibliche Personen</li>
+                  <li class="flex items-start"><span class="text-pink-500 mr-1">•</span> Früchte, Blumen</li>
+                  <li class="flex items-start"><span class="text-pink-500 mr-1">•</span> Endungen: -ung, -heit, -keit</li>
+                  <li class="flex items-start"><span class="text-pink-500 mr-1">•</span> Alle Pluralformen</li>
+                </ul>
+              </div>
+              
+              <!-- DAS Reference -->
+              <div class="bg-green-50 rounded-lg p-4">
+                <h4 class="font-bold text-green-800 mb-2 flex items-center gap-1">
+                  <i data-lucide="baby" class="w-4 h-4"></i> DAS
+                </h4>
+                <ul class="text-xs space-y-1 text-green-700">
+                  <li class="flex items-start"><span class="text-green-500 mr-1">•</span> Junge Lebewesen</li>
+                  <li class="flex items-start"><span class="text-green-500 mr-1">•</span> Länder, Städte</li>
+                  <li class="flex items-start"><span class="text-green-500 mr-1">•</span> Farben, Sprachen</li>
+                  <li class="flex items-start"><span class="text-green-500 mr-1">•</span> Endungen: -chen, -lein, -um</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Game Selection -->
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- Quiz Game -->
+            <div class="game-card bg-purple-50 rounded-xl p-5 border border-purple-100 text-center">
+              <div class="bg-purple-100 text-purple-800 p-3 rounded-full inline-block mb-4">
+                <i data-lucide="help-circle" class="w-8 h-8"></i>
+              </div>
+              <h3 class="font-bold text-purple-800 mb-2">Artikel-Quiz</h3>
+              <p class="text-sm text-purple-700 mb-4">Wähle den richtigen Artikel für jedes angezeigte Wort</p>
+              <div class="translation">Göstərilən hər söz üçün düzgün artiklı seçin</div>
+              <button class="start-quiz bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 transition-colors mt-3">
+                Spiel starten
+              </button>
+            </div>
+            
+            <!-- Flashcards Game -->
+            <div class="game-card bg-purple-50 rounded-xl p-5 border border-purple-100 text-center">
+              <div class="bg-purple-100 text-purple-800 p-3 rounded-full inline-block mb-4">
+                <i data-lucide="layers" class="w-8 h-8"></i>
+              </div>
+              <h3 class="font-bold text-purple-800 mb-2">Flashcards</h3>
+              <p class="text-sm text-purple-700 mb-4">Lerne mit Karteikarten und präge dir die Artikel ein</p>
+              <div class="translation">Flashcard-larla öyrənin və artiklları yadda saxlayın</div>
+              <button class="start-flashcards bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 transition-colors mt-3">
+                Spiel starten
+              </button>
+            </div>
+            
+            <!-- Suffix Match Game -->
+            <div class="game-card bg-purple-50 rounded-xl p-5 border border-purple-100 text-center">
+              <div class="bg-purple-100 text-purple-800 p-3 rounded-full inline-block mb-4">
+                <i data-lucide="puzzle" class="w-8 h-8"></i>
+              </div>
+              <h3 class="font-bold text-purple-800 mb-2">Suffix Match</h3>
+              <p class="text-sm text-purple-700 mb-4">Verbinde Wortendungen mit den richtigen Artikeln</p>
+              <div class="translation">Söz sonlarını düzgün artikllarla uyğunlaşdırın</div>
+              <button class="start-suffix-match bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 transition-colors mt-3">
+                Spiel starten
+              </button>
+            </div>
+            
+            <!-- Drag & Drop Game -->
+            <div class="game-card bg-purple-50 rounded-xl p-5 border border-purple-100 text-center">
+              <div class="bg-purple-100 text-purple-800 p-3 rounded-full inline-block mb-4">
+                <i data-lucide="move" class="w-8 h-8"></i>
+              </div>
+              <h3 class="font-bold text-purple-800 mb-2">Drag & Drop</h3>
+              <p class="text-sm text-purple-700 mb-4">Ziehe Nomen zu den richtigen Artikeln</p>
+              <div class="translation">Adları düzgün artikllara sürükləyin</div>
+              <button class="start-drag-drop bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 transition-colors mt-3">
+                Spiel starten
+              </button>
+            </div>
+            
+            <!-- Quick Quiz Game -->
+            <div class="game-card bg-purple-50 rounded-xl p-5 border border-purple-100 text-center">
+              <div class="bg-purple-100 text-purple-800 p-3 rounded-full inline-block mb-4">
+                <i data-lucide="clock" class="w-8 h-8"></i>
+              </div>
+              <h3 class="font-bold text-purple-800 mb-2">Schnellquiz</h3>
+              <p class="text-sm text-purple-700 mb-4">Beantworte Fragen gegen die Zeit</p>
+              <div class="translation">Zamana qarşı suallara cavab verin</div>
+              <button class="start-quick-quiz bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 transition-colors mt-3">
+                Spiel starten
+              </button>
+            </div>
+            
+            <!-- Word Input Game -->
+            <div class="game-card bg-purple-50 rounded-xl p-5 border border-purple-100 text-center">
+              <div class="bg-purple-100 text-purple-800 p-3 rounded-full inline-block mb-4">
+                <i data-lucide="edit" class="w-8 h-8"></i>
+              </div>
+              <h3 class="font-bold text-purple-800 mb-2">Eigene Wörter</h3>
+              <p class="text-sm text-purple-700 mb-4">Füge deine eigenen Wörter hinzu und übe sie</p>
+              <div class="translation">Öz sözlərinizi əlavə edin və onları məşq edin</div>
+              <button class="start-custom-words bg-purple-500 text-white px-6 py-2 rounded-lg hover:bg-purple-600 transition-colors mt-3">
+                Spiel starten
+              </button>
+            </div>
+          </div>
+          
+          <!-- Custom Words Section -->
+          <div id="custom-words-section" class="bg-purple-50 rounded-xl p-5 border border-purple-100 mb-8 hidden">
+            <h3 class="font-bold text-purple-800 mb-4 flex items-center gap-2">
+              <i data-lucide="edit" class="w-5 h-5"></i>
+              Eigene Wörter hinzufügen
+              <div class="translation">Öz sözlərinizi əlavə edin</div>
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-medium text-purple-700 mb-1">Wort</label>
+                <input type="text" id="custom-word" class="w-full px-3 py-2 border border-purple-200 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-purple-700 mb-1">Artikel</label>
+                <select id="custom-article" class="w-full px-3 py-2 border border-purple-200 rounded-lg">
+                  <option value="der">der</option>
+                  <option value="die">die</option>
+                  <option value="das">das</option>
+                </select>
+              </div>
+            </div>
+            <button id="add-custom-word" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+              Wort hinzufügen
+            </button>
+            
+            <div class="mt-6">
+              <h4 class="font-semibold text-purple-800 mb-2">Deine Wörter:</h4>
+              <div class="translation">Sizin sözləriniz:</div>
+              <div id="custom-words-list" class="bg-white rounded-lg p-3">
+                <p class="text-gray-500 text-sm">Noch keine Wörter hinzugefügt</p>
+                <div class="translation">Hələ heç bir söz əlavə edilməyib</div>
+              </div>
+              <button id="practice-custom-words" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors mt-3 hidden">
+                Mit diesen Wörtern üben
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="text-center text-gray-600 text-sm mt-12 mb-6">
+      <p>Deutsche Artikel Meisterklasse © 2025 - Alle Rechte vorbehalten</p>
+      <div class="translation">Alman Artikl Ustası © 2025 - Bütün hüquqlar qorunur</div>
+      <p class="mt-1">Alle Rechte gehören Propega sp z O.O.</p>
+      <div class="translation">Bütün hüquqlar Propega sp z O.O.-yə aiddir</div>
+    </div>
+  </div>
+
+  <!-- Game Modals -->
+  <div id="quiz-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full relative mx-4">
+      <div class="close-btn"><i data-lucide="x" class="w-5 h-5"></i></div>
+      <h2 class="text-2xl font-bold text-purple-800 mb-4">Artikel-Quiz</h2>
+      <p class="text-gray-600 mb-4">Wähle den richtigen Artikel für das angezeigte Wort:</p>
+      <div id="quiz-question" class="text-2xl font-medium mb-6 text-center"></div>
+      <div id="quiz-options" class="grid grid-cols-3 gap-3 mb-6">
+        <!-- Options will be added here by JavaScript -->
+      </div>
+      <div id="quiz-feedback" class="text-center font-medium mb-6"></div>
+      <div class="flex justify-between items-center">
+        <div>Punktestand: <span id="quiz-score" class="font-bold">0</span></div>
+        <button id="quiz-next" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+          Nächste
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="flashcards-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full relative mx-4">
+      <div class="close-btn"><i data-lucide="x" class="w-5 h-5"></i></div>
+      <h2 class="text-2xl font-bold text-purple-800 mb-4">Flashcards</h2>
+      <p class="text-gray-600 mb-4">Klicke auf die Karte, um sie umzudrehen:</p>
+      
+      <div class="flashcard w-full h-48 mb-6">
+        <div class="flashcard-inner">
+          <div class="flashcard-front bg-gradient-to-br from-purple-100 to-purple-200 flex flex-col items-center justify-center">
+            <div id="flashcard-front" class="text-2xl font-medium"></div>
+            <button class="voice-btn mt-4 text-purple-600">
+              <i data-lucide="volume-2" class="w-6 h-6"></i>
+            </button>
+          </div>
+          <div class="flashcard-back bg-gradient-to-br from-purple-200 to-purple-300 flex flex-col items-center justify-center">
+            <div id="flashcard-back" class="text-2xl font-medium"></div>
+            <button class="voice-btn mt-4 text-purple-600">
+              <i data-lucide="volume-2" class="w-6 h-6"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex justify-between">
+        <button id="flashcard-prev" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors">
+          Vorherige
+        </button>
+        <button id="flashcard-flip" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+          Umdrehen
+        </button>
+        <button id="flashcard-next" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+          Nächste
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="suffix-match-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full relative mx-4">
+      <div class="close-btn"><i data-lucide="x" class="w-5 h-5"></i></div>
+      <h2 class="text-2xl font-bold text-purple-800 mb-4">Suffix Match</h2>
+      <p class="text-gray-600 mb-4">Wähle den richtigen Artikel für die Wortendung:</p>
+      <div id="suffix-match-word" class="text-2xl font-medium mb-6 text-center"></div>
+      <div id="suffix-match-options" class="grid grid-cols-3 gap-3 mb-6">
+        <!-- Options will be added here by JavaScript -->
+      </div>
+      <div id="suffix-match-feedback" class="text-center font-medium mb-6"></div>
+      <div class="flex justify-between items-center">
+        <div>Punktestand: <span id="suffix-match-score" class="font-bold">0</span></div>
+        <button id="suffix-match-next" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+          Nächste
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drag & Drop Modal -->
+  <div id="drag-drop-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full relative mx-4">
+      <div class="close-btn"><i data-lucide="x" class="w-5 h-5"></i></div>
+      <h2 class="text-2xl font-bold text-purple-800 mb-4">Drag & Drop</h2>
+      <p class="text-gray-600 mb-4">Ziehe die Wörter zu den richtigen Artikeln:</p>
+      
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="dropzone bg-blue-100 p-4 rounded-lg text-center" data-article="der">
+          <h3 class="font-bold text-blue-800">DER</h3>
+        </div>
+        <div class="dropzone bg-pink-100 p-4 rounded-lg text-center" data-article="die">
+          <h3 class="font-bold text-pink-800">DIE</h3>
+        </div>
+        <div class="dropzone bg-green-100 p-4 rounded-lg text-center" data-article="das">
+          <h3 class="font-bold text-green-800">DAS</h3>
+        </div>
+      </div>
+      
+      <div id="drag-drop-words" class="grid grid-cols-2 gap-3 mb-6">
+        <!-- Words will be added here by JavaScript -->
+      </div>
+      
+      <div id="drag-drop-feedback" class="text-center font-medium mb-6"></div>
+      <div class="flex justify-between items-center">
+        <div>Richtig: <span id="drag-drop-score" class="font-bold">0</span>/<span id="drag-drop-total">0</span></div>
+        <button id="drag-drop-next" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors">
+          Nächste
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Quiz Modal -->
+  <div id="quick-quiz-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full relative mx-4">
+      <div class="close-btn"><i data-lucide="x" class="w-5 h-5"></i></div>
+      <h2 class="text-2xl font-bold text-purple-800 mb-4">Schnellquiz</h2>
+      <div class="flex justify-between items-center mb-4">
+        <div class="timer text-purple-600">Zeit: <span id="quiz-timer">30</span>s</div>
+        <div>Punktestand: <span id="quick-quiz-score" class="font-bold">0</span></div>
+      </div>
+      <p class="text-gray-600 mb-4">Wähle den richtigen Artikel:</p>
+      <div id="quick-quiz-question" class="text-2xl font-medium mb-6 text-center"></div>
+      <div id="quick-quiz-options" class="grid grid-cols-3 gap-3 mb-6">
+        <!-- Options will be added here by JavaScript -->
+      </div>
+      <div id="quick-quiz-feedback" class="text-center font-medium mb-6"></div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+lucide.createIcons();
+
+// Close modal button
+document.querySelector('#drag-drop-modal .close-btn').addEventListener('click', () => {
+  document.getElementById('drag-drop-modal').classList.add('hidden');
+});
+
+    // Tab Switching
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        button.classList.add('active');
+        const tabId = button.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // Learn More Buttons (Responsive)
+    const learnMoreButtons = document.querySelectorAll('.learn-more-btn');
+    learnMoreButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        if (window.innerWidth < 768) { // Only allow clicking on small screens
+          const moreContent = button.parentElement.nextElementSibling;
+          moreContent.classList.toggle('hidden');
+          const icon = button.querySelector('i');
+          if (moreContent.classList.contains('hidden')) {
+            icon.setAttribute('data-lucide', 'chevron-down');
+          } else {
+            icon.setAttribute('data-lucide', 'chevron-up');
+          }
+          lucide.createIcons();
+        }
+      });
+    });
+
+    // Game Data
+    const quizData = [
+  { word: 'Frau', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Mann', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Kind', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Haus', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Auto', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Schule', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Universität', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Computer', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Lampe', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Buch', correct: 'das', options: ['der', 'die', 'das'] },
+
+  { word: 'Tisch', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Blume', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Fenster', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Hund', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Katze', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Vater', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Mutter', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Stuhl', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Baby', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Straße', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Bett', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Lehrer', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Lehrerin', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Sohn', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Tochter', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Apfel', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Banane', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Ei', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Kaffee', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Milch', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Brot', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Garten', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Tasche', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Tag', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Nacht', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Baum', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Tür', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Bild', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Sessel', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Kerze', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Berg', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Spielzeug', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Stift', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Uhr', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Schrank', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Bluse', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Meer', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Zug', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Rose', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Telefon', correct: 'das', options: ['der', 'die', 'das'] },
+
+  { word: 'Wald', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Wand', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Kino', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Ofen', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Treppe', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Fluss', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Wolke', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Radio', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Brief', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Hand', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Lied', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Gabel', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Wind', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Nase', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Mädchen', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Arm', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Papier', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Weg', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Zunge', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Seil', correct: 'das', options: ['der', 'die', 'das'] },
+
+  { word: 'Blätter', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Hammer', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Ente', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Motorrad', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Rand', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Reise', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Kopf', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Stadt', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Buch', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Hund', correct: 'der', options: ['der', 'die', 'das'] },
+
+  { word: 'Auge', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Lehrer', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Blume', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Fisch', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Wasser', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Kerze', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Baum', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Küche', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Auto', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Frau', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Mann', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Stuhl', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Zeit', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Haus', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Tisch', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Hand', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Mädchen', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Telefon', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Schule', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Kinder', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Berg', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Blume', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Auto', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Vogel', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Straße', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Kind', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Hut', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Wand', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Fenster', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Lehrer', correct: 'der', options: ['der', 'die', 'das'] },
+
+  { word: 'Tasche', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Buch', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Apfel', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Nase', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Kindergarten', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Lampe', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Schlafzimmer', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Hund', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Telefon', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Freundin', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Brücke', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Stuhl', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Zeitung', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Garten', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Küche', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Haus', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Blatt', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Chef', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Bett', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Blume', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Mond', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Schule', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Löffel', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Schrank', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Seife', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Wasser', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Tasche', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Auto', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Vogel', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Kind', correct: 'das', options: ['der', 'die', 'das'] },
+
+  { word: 'Baum', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Sonne', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Fenster', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Stadt', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Wald', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Heft', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Kaffee', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Tisch', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Bild', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Blume', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Papier', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Mutter', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Lehrer', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Spiel', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Katze', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Hund', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Zug', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Kirche', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Himmel', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Kindergarten', correct: 'der', options: ['der', 'die', 'das'] },
+
+  { word: 'Tasche', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Küche', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Buch', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Schloss', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Berg', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Blume', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Stuhl', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Auto', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Hose', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Kind', correct: 'das', options: ['der', 'die', 'das'] },
+
+  { word: 'Meer', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Freund', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Blatt', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Taxi', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Garten', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Blume', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Altstadt', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Bleistift', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Fenster', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Hand', correct: 'die', options: ['der', 'die', 'das'] },
+
+  { word: 'Straße', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Ball', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Apfel', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Brot', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Freundin', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Salat', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Musik', correct: 'die', options: ['der', 'die', 'das'] },
+  { word: 'Kuchen', correct: 'der', options: ['der', 'die', 'das'] },
+  { word: 'Badezimmer', correct: 'das', options: ['der', 'die', 'das'] },
+  { word: 'Lehrer', correct: 'der', options: ['der', 'die', 'das'] }
+];
+
+
+    const flashcardData = [
+  { front: 'Frau', back: 'die Frau' },
+  { front: 'Mann', back: 'der Mann' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Haus', back: 'das Haus' },
+  { front: 'Auto', back: 'das Auto' },
+  { front: 'Schule', back: 'die Schule' },
+  { front: 'Universität', back: 'die Universität' },
+  { front: 'Computer', back: 'der Computer' },
+  { front: 'Lampe', back: 'die Lampe' },
+  { front: 'Buch', back: 'das Buch' },
+  { front: 'Stuhl', back: 'der Stuhl' },
+  { front: 'Tisch', back: 'der Tisch' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Fenster', back: 'das Fenster' },
+  { front: 'Hund', back: 'der Hund' },
+  { front: 'Katze', back: 'die Katze' },
+  { front: 'Vater', back: 'der Vater' },
+  { front: 'Mutter', back: 'die Mutter' },
+  { front: 'Bruder', back: 'der Bruder' },
+  { front: 'Schwester', back: 'die Schwester' },
+  { front: 'Bett', back: 'das Bett' },
+  { front: 'Freund', back: 'der Freund' },
+  { front: 'Freundin', back: 'die Freundin' },
+  { front: 'Baby', back: 'das Baby' },
+  { front: 'Lehrer', back: 'der Lehrer' },
+  { front: 'Lehrerin', back: 'die Lehrerin' },
+  { front: 'Sohn', back: 'der Sohn' },
+  { front: 'Tochter', back: 'die Tochter' },
+  { front: 'Zimmer', back: 'das Zimmer' },
+  { front: 'Apfel', back: 'der Apfel' },
+  { front: 'Banane', back: 'die Banane' },
+  { front: 'Ei', back: 'das Ei' },
+  { front: 'Kaffee', back: 'der Kaffee' },
+  { front: 'Milch', back: 'die Milch' },
+  { front: 'Brot', back: 'das Brot' },
+  { front: 'Garten', back: 'der Garten' },
+  { front: 'Tasche', back: 'die Tasche' },
+  { front: 'Auto', back: 'das Auto' },
+  { front: 'Tag', back: 'der Tag' },
+  { front: 'Nacht', back: 'die Nacht' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Baum', back: 'der Baum' },
+  { front: 'Tür', back: 'die Tür' },
+  { front: 'Bild', back: 'das Bild' },
+  { front: 'Sessel', back: 'der Sessel' },
+  { front: 'Kerze', back: 'die Kerze' },
+  { front: 'Buch', back: 'das Buch' },
+  { front: 'Berg', back: 'der Berg' },
+  { front: 'Straße', back: 'die Straße' },
+  { front: 'Spielzeug', back: 'das Spielzeug' },
+  { front: 'Stift', back: 'der Stift' },
+  { front: 'Uhr', back: 'die Uhr' },
+  { front: 'Fenster', back: 'das Fenster' },
+  { front: 'Schrank', back: 'der Schrank' },
+  { front: 'Bluse', back: 'die Bluse' },
+  { front: 'Meer', back: 'das Meer' },
+  { front: 'Zug', back: 'der Zug' },
+  { front: 'Rose', back: 'die Rose' },
+  { front: 'Telefon', back: 'das Telefon' },
+  { front: 'Wald', back: 'der Wald' },
+  { front: 'Wand', back: 'die Wand' },
+  { front: 'Kino', back: 'das Kino' },
+  { front: 'Ofen', back: 'der Ofen' },
+  { front: 'Treppe', back: 'die Treppe' },
+  { front: 'Märchen', back: 'das Märchen' },
+  { front: 'Fluss', back: 'der Fluss' },
+  { front: 'Wolke', back: 'die Wolke' },
+  { front: 'Radio', back: 'das Radio' },
+  { front: 'Brief', back: 'der Brief' },
+  { front: 'Hand', back: 'die Hand' },
+  { front: 'Lied', back: 'das Lied' },
+  { front: 'Tag', back: 'der Tag' },
+  { front: 'Gabel', back: 'die Gabel' },
+  { front: 'Getränk', back: 'das Getränk' },
+  { front: 'Wind', back: 'der Wind' },
+  { front: 'Nase', back: 'die Nase' },
+  { front: 'Mädchen', back: 'das Mädchen' },
+  { front: 'Arm', back: 'der Arm' },
+  { front: 'Farbe', back: 'die Farbe' },
+  { front: 'Papier', back: 'das Papier' },
+  { front: 'Weg', back: 'der Weg' },
+  { front: 'Zunge', back: 'die Zunge' },
+  { front: 'Seil', back: 'das Seil' },
+  { front: 'Fisch', back: 'der Fisch' },
+  { front: 'Blätter', back: 'die Blätter' },
+  { front: 'Märchen', back: 'das Märchen' },
+  { front: 'Hammer', back: 'der Hammer' },
+  { front: 'Ente', back: 'die Ente' },
+  { front: 'Motorrad', back: 'das Motorrad' },
+  { front: 'Boden', back: 'der Boden' },
+  { front: 'Küche', back: 'die Küche' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Raum', back: 'der Raum' },
+  { front: 'Zeit', back: 'die Zeit' },
+  { front: 'Gesicht', back: 'das Gesicht' },
+  { front: 'Ofen', back: 'der Ofen' },
+  { front: 'Tasse', back: 'die Tasse' },
+  { front: 'Heft', back: 'das Heft' },
+  { front: 'Leiter', back: 'die Leiter' },
+  { front: 'Vogel', back: 'der Vogel' },
+  { front: 'Nacht', back: 'die Nacht' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Park', back: 'der Park' },
+  { front: 'Türe', back: 'die Türe' },
+  { front: 'Feld', back: 'das Feld' },
+  { front: 'Chef', back: 'der Chef' },
+  { front: 'Wolke', back: 'die Wolke' },
+  { front: 'Büro', back: 'das Büro' },
+  { front: 'Apfel', back: 'der Apfel' },
+  { front: 'Bank', back: 'die Bank' },
+  { front: 'Dorf', back: 'das Dorf' },
+  { front: 'Teller', back: 'der Teller' },
+  { front: 'Wiese', back: 'die Wiese' },
+  { front: 'Hotel', back: 'das Hotel' },
+  { front: 'Vater', back: 'der Vater' },
+  { front: 'Straße', back: 'die Straße' },
+  { front: 'Schaf', back: 'das Schaf' },
+  { front: 'Garten', back: 'der Garten' },
+  { front: 'Tasche', back: 'die Tasche' },
+  { front: 'Bett', back: 'das Bett' },
+  { front: 'Hund', back: 'der Hund' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Konto', back: 'das Konto' },
+  { front: 'Fenster', back: 'das Fenster' },
+  { front: 'Ofen', back: 'der Ofen' },
+  { front: 'Karte', back: 'die Karte' },
+  { front: 'Wort', back: 'das Wort' },
+  { front: 'Mond', back: 'der Mond' },
+  { front: 'Lampe', back: 'die Lampe' },
+  { front: 'Essen', back: 'das Essen' },
+  { front: 'Hut', back: 'der Hut' },
+  { front: 'Rose', back: 'die Rose' },
+  { front: 'Wasser', back: 'das Wasser' },
+  { front: 'Gast', back: 'der Gast' },
+  { front: 'Nadel', back: 'die Nadel' },
+  { front: 'Messer', back: 'das Messer' },
+  { front: 'Ofen', back: 'der Ofen' },
+  { front: 'Zeitung', back: 'die Zeitung' },
+  { front: 'Museum', back: 'das Museum' },
+  { front: 'König', back: 'der König' },
+  { front: 'Antwort', back: 'die Antwort' },
+  { front: 'Zimmer', back: 'das Zimmer' },
+  { front: 'Onkel', back: 'der Onkel' },
+  { front: 'Spinne', back: 'die Spinne' },
+  { front: 'Hemd', back: 'das Hemd' },
+  { front: 'Opa', back: 'der Opa' },
+  { front: 'Tante', back: 'die Tante' },
+  { front: 'Märchen', back: 'das Märchen' },
+  { front: 'Sturm', back: 'der Sturm' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Jahr', back: 'das Jahr' },
+  { front: 'Anzug', back: 'der Anzug' },
+  { front: 'Schlange', back: 'die Schlange' },
+  { front: 'Bein', back: 'das Bein' },
+  { front: 'Baum', back: 'der Baum' },
+  { front: 'Post', back: 'die Post' },
+  { front: 'Büchlein', back: 'das Büchlein' },
+  { front: 'Stuhl', back: 'der Stuhl' },
+  { front: 'Treppenhaus', back: 'das Treppenhaus' },
+  { front: 'Wein', back: 'der Wein' },
+  { front: 'Wiese', back: 'die Wiese' },
+  { front: 'Mädchen', back: 'das Mädchen' },
+  { front: 'Frühling', back: 'der Frühling' },
+  { front: 'Biene', back: 'die Biene' },
+  { front: 'Ding', back: 'das Ding' },
+  { front: 'Ring', back: 'der Ring' },
+  { front: 'Küche', back: 'die Küche' },
+  { front: 'Wort', back: 'das Wort' },
+  { front: 'Stein', back: 'der Stein' },
+  { front: 'Gabel', back: 'die Gabel' },
+  { front: 'Kindchen', back: 'das Kindchen' },
+  { front: 'Hahn', back: 'der Hahn' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Feld', back: 'das Feld' },
+  { front: 'Vogel', back: 'der Vogel' },
+  { front: 'Gemeinde', back: 'die Gemeinde' },
+  { front: 'Niveau', back: 'das Niveau' },
+  { front: 'Wald', back: 'der Wald' },
+  { front: 'Reise', back: 'die Reise' },
+  { front: 'Messer', back: 'das Messer' },
+  { front: 'Bär', back: 'der Bär' },
+  { front: 'Hand', back: 'die Hand' },
+  { front: 'Dach', back: 'das Dach' },
+  { front: 'Anzug', back: 'der Anzug' },
+  { front: 'Brille', back: 'die Brille' },
+  { front: 'Dorf', back: 'das Dorf' },
+  { front: 'Sessel', back: 'der Sessel' },
+  { front: 'Gitarre', back: 'die Gitarre' },
+  { front: 'Auge', back: 'das Auge' },
+  { front: 'Baum', back: 'der Baum' },
+  { front: 'Schule', back: 'die Schule' },
+  { front: 'Zitat', back: 'das Zitat' },
+  { front: 'Apfel', back: 'der Apfel' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Radio', back: 'das Radio' },
+  { front: 'Stern', back: 'der Stern' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Flugzeug', back: 'das Flugzeug' },
+  { front: 'Schuh', back: 'der Schuh' },
+  { front: 'Stadt', back: 'die Stadt' },
+  { front: 'Mensch', back: 'der Mensch' },
+  { front: 'Frau', back: 'die Frau' },
+  { front: 'Fenster', back: 'das Fenster' },
+  { front: 'Verein', back: 'der Verein' },
+  { front: 'Bitte', back: 'die Bitte' },
+  { front: 'Messer', back: 'das Messer' },
+  { front: 'Stuhl', back: 'der Stuhl' },
+  { front: 'Katze', back: 'die Katze' },
+  { front: 'Ergebnis', back: 'das Ergebnis' },
+  { front: 'Wecker', back: 'der Wecker' },
+  { front: 'Mütze', back: 'die Mütze' },
+  { front: 'Gebäude', back: 'das Gebäude' },
+  { front: 'Fahrer', back: 'der Fahrer' },
+  { front: 'Uhr', back: 'die Uhr' },
+  { front: 'Bohnen', back: 'die Bohnen' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Apfel', back: 'der Apfel' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Tier', back: 'das Tier' },
+  { front: 'Stift', back: 'der Stift' },
+  { front: 'Ladung', back: 'die Ladung' },
+  { front: 'Rätsel', back: 'das Rätsel' },
+  { front: 'Hut', back: 'der Hut' },
+  { front: 'Leidenschaft', back: 'die Leidenschaft' },
+  { front: 'Lager', back: 'das Lager' },
+  { front: 'Berg', back: 'der Berg' },
+  { front: 'Gans', back: 'die Gans' },
+  { front: 'Pferd', back: 'das Pferd' },
+  { front: 'Bart', back: 'der Bart' },
+  { front: 'Butter', back: 'die Butter' },
+  { front: 'Programm', back: 'das Programm' },
+  { front: 'Fisch', back: 'der Fisch' },
+  { front: 'Decke', back: 'die Decke' },
+  { front: 'Problem', back: 'das Problem' },
+  { front: 'Wunsch', back: 'der Wunsch' },
+  { front: 'Adresse', back: 'die Adresse' },
+  { front: 'Foto', back: 'das Foto' },
+  { front: 'Junge', back: 'der Junge' },
+  { front: 'Nase', back: 'die Nase' },
+  { front: 'Bett', back: 'das Bett' },
+  { front: 'Becher', back: 'der Becher' },
+  { front: 'Blattrippe', back: 'die Blattrippe' },
+  { front: 'Team', back: 'das Team' },
+  { front: 'König', back: 'der König' },
+  { front: 'Seife', back: 'die Seife' },
+  { front: 'Büro', back: 'das Büro' },
+  { front: 'Gast', back: 'der Gast' },
+  { front: 'Gitarre', back: 'die Gitarre' },
+  { front: 'Handtuch', back: 'das Handtuch' },
+  { front: 'Chef', back: 'der Chef' },
+  { front: 'Küste', back: 'die Küste' },
+  { front: 'Stück', back: 'das Stück' },
+  { front: 'Zug', back: 'der Zug' },
+  { front: 'Gans', back: 'die Gans' },
+  { front: 'Kabel', back: 'das Kabel' },
+  { front: 'Tag', back: 'der Tag' },
+  { front: 'Linse', back: 'die Linse' },
+  { front: 'Schiff', back: 'das Schiff' },
+  { front: 'Regen', back: 'der Regen' },
+  { front: 'Liebe', back: 'die Liebe' },
+  { front: 'Gerät', back: 'das Gerät' },
+  { front: 'Vulkan', back: 'der Vulkan' },
+  { front: 'Rolle', back: 'die Rolle' },
+  { front: 'Papier', back: 'das Papier' },
+  { front: 'Fuß', back: 'der Fuß' },
+  { front: 'Pause', back: 'die Pause' },
+  { front: 'Buch', back: 'das Buch' },
+  { front: 'Baum', back: 'der Baum' },
+  { front: 'Brücke', back: 'die Brücke' },
+  { front: 'Eis', back: 'das Eis' },
+  { front: 'Brief', back: 'der Brief' },
+  { front: 'Reise', back: 'die Reise' },
+  { front: 'Erlebnis', back: 'das Erlebnis' },
+  { front: 'Fluss', back: 'der Fluss' },
+  { front: 'Wurst', back: 'die Wurst' },
+  { front: 'Gesicht', back: 'das Gesicht' },
+  { front: 'Rand', back: 'der Rand' },
+  { front: 'Kunst', back: 'die Kunst' },
+  { front: 'Buch', back: 'das Buch' },
+  { front: 'Stein', back: 'der Stein' },
+  { front: 'Maus', back: 'die Maus' },
+  { front: 'Wissen', back: 'das Wissen' },
+  { front: 'Tisch', back: 'der Tisch' },
+  { front: 'Hose', back: 'die Hose' },
+  { front: 'Mädchen', back: 'das Mädchen' },
+  { front: 'Felsen', back: 'der Felsen' },
+  { front: 'Sonne', back: 'die Sonne' },
+  { front: 'Orchester', back: 'das Orchester' },
+  { front: 'Pilz', back: 'der Pilz' },
+  { front: 'Rechnung', back: 'die Rechnung' },
+  { front: 'Kleid', back: 'das Kleid' },
+  { front: 'Briefkasten', back: 'der Briefkasten' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Fahrrad', back: 'das Fahrrad' },
+  { front: 'Keller', back: 'der Keller' },
+  { front: 'Straße', back: 'die Straße' },
+  { front: 'Fenster', back: 'das Fenster' },
+  { front: 'Himmel', back: 'der Himmel' },
+  { front: 'Frau', back: 'die Frau' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Löffel', back: 'der Löffel' },
+  { front: 'Steckdose', back: 'die Steckdose' },
+  { front: 'Handtuch', back: 'das Handtuch' },
+  { front: 'Wein', back: 'der Wein' },
+  { front: 'Lampe', back: 'die Lampe' },
+  { front: 'Brot', back: 'das Brot' },
+  { front: 'Sessel', back: 'der Sessel' },
+  { front: 'Tasche', back: 'die Tasche' },
+  { front: 'Auto', back: 'das Auto' },
+  { front: 'Mond', back: 'der Mond' },
+  { front: 'Wand', back: 'die Wand' },
+  { front: 'Bett', back: 'das Bett' },
+  { front: 'Stuhl', back: 'der Stuhl' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Haus', back: 'das Haus' },
+  { front: 'Apfel', back: 'der Apfel' },
+  { front: 'Seife', back: 'die Seife' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Schrank', back: 'der Schrank' },
+  { front: 'Rose', back: 'die Rose' },
+  { front: 'Mädchen', back: 'das Mädchen' },
+  { front: 'Tisch', back: 'der Tisch' },
+  { front: 'Straße', back: 'die Straße' },
+  { front: 'Bild', back: 'das Bild' },
+  { front: 'Hund', back: 'der Hund' },
+  { front: 'Hand', back: 'die Hand' },
+  { front: 'Zimmer', back: 'das Zimmer' },
+  { front: 'Vogel', back: 'der Vogel' },
+  { front: 'Zeitung', back: 'die Zeitung' },
+  { front: 'Fenster', back: 'das Fenster' },
+  { front: 'Brücke', back: 'die Brücke' },
+  { front: 'Schuh', back: 'der Schuh' },
+  { front: 'Liebe', back: 'die Liebe' },
+  { front: 'Spiel', back: 'das Spiel' },
+  { front: 'Berg', back: 'der Berg' },
+  { front: 'Bluse', back: 'die Bluse' },
+  { front: 'Auto', back: 'das Auto' },
+  { front: 'Kuchen', back: 'der Kuchen' },
+  { front: 'Nacht', back: 'die Nacht' },
+  { front: 'Glas', back: 'das Glas' },
+  { front: 'Wald', back: 'der Wald' },
+  { front: 'Pflanze', back: 'die Pflanze' },
+  { front: 'Buch', back: 'das Buch' },
+  { front: 'Kopf', back: 'der Kopf' },
+  { front: 'Schokolade', back: 'die Schokolade' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Fußball', back: 'der Fußball' },
+  { front: 'Tasche', back: 'die Tasche' },
+  { front: 'Möbel', back: 'das Möbel' },
+  { front: 'See', back: 'der See' },
+  { front: 'Wolke', back: 'die Wolke' },
+  { front: 'Hem', back: 'das Hem' },
+  { front: 'Fisch', back: 'der Fisch' },
+  { front: 'Küche', back: 'die Küche' },
+  { front: 'Haus', back: 'das Haus' },
+  { front: 'Stift', back: 'der Stift' },
+  { front: 'Tafel', back: 'die Tafel' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Tag', back: 'der Tag' },
+  { front: 'Rose', back: 'die Rose' },
+  { front: 'Bett', back: 'das Bett' },
+  { front: 'Wagen', back: 'der Wagen' },
+  { front: 'Schule', back: 'die Schule' },
+  { front: 'Fenster', back: 'das Fenster' },
+  { front: 'Spielzeug', back: 'das Spielzeug' },
+  { front: 'Messer', back: 'das Messer' },
+  { front: 'Schrank', back: 'der Schrank' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Buch', back: 'das Buch' },
+  { front: 'Turm', back: 'der Turm' },
+  { front: 'Lampe', back: 'die Lampe' },
+  { front: 'Kind', back: 'das Kind' },
+  { front: 'Brücke', back: 'die Brücke' },
+  { front: 'Hund', back: 'der Hund' },
+  { front: 'Tisch', back: 'der Tisch' },
+  { front: 'Straße', back: 'die Straße' },
+  { front: 'Blume', back: 'die Blume' },
+  { front: 'Fenster', back: 'das Fenster' },
+  { front: 'Apfel', back: 'der Apfel' },
+  { front: 'Lampe', back: 'die Lampe' },
+  { front: 'Kind', back: 'das Kind' }
+];
+
+
+    const suffixMatchData = [
+  { word: 'Freiheit', suffix: '-heit', correct: 'die' },
+  { word: 'Gesundheit', suffix: '-heit', correct: 'die' },
+  { word: 'Möglichkeit', suffix: '-keit', correct: 'die' },
+  { word: 'Schwierigkeit', suffix: '-keit', correct: 'die' },
+  { word: 'Wohnung', suffix: '-ung', correct: 'die' },
+  { word: 'Zeitung', suffix: '-ung', correct: 'die' },
+  { word: 'Nation', suffix: '-ion', correct: 'die' },
+  { word: 'Situation', suffix: '-ion', correct: 'die' },
+  { word: 'Musik', suffix: '-ik', correct: 'die' },
+  { word: 'Elektronik', suffix: '-ik', correct: 'die' },
+  { word: 'Bäckerei', suffix: '-ei', correct: 'die' },
+  { word: 'Konditorei', suffix: '-ei', correct: 'die' },
+  { word: 'Prüfung', suffix: '-ung', correct: 'die' },
+  { word: 'Diskussion', suffix: '-ion', correct: 'die' },
+  { word: 'Geschwindigkeit', suffix: '-keit', correct: 'die' },
+  { word: 'Schönheit', suffix: '-heit', correct: 'die' },
+  { word: 'Bibliothek', suffix: '-thek', correct: 'die' },
+  { word: 'Apotheke', suffix: '-e', correct: 'die' },
+  { word: 'Freundschaft', suffix: '-schaft', correct: 'die' },
+  { word: 'Wissenschaft', suffix: '-schaft', correct: 'die' },
+  { word: 'Bäckerei', suffix: '-erei', correct: 'die' },
+  { word: 'Malerei', suffix: '-erei', correct: 'die' },
+  // Masculine
+  { word: 'Lehrling', suffix: '-ling', correct: 'der' },
+  { word: 'Frühling', suffix: '-ling', correct: 'der' },
+  { word: 'Honig', suffix: '-ig', correct: 'der' },
+  { word: 'König', suffix: '-ig', correct: 'der' },
+  { word: 'Gärtner', suffix: '-er', correct: 'der' },
+  { word: 'Computer', suffix: '-er', correct: 'der' },
+  { word: 'Bäcker', suffix: '-er', correct: 'der' },
+  { word: 'Gast', suffix: '-ast', correct: 'der' },
+  { word: 'Journalist', suffix: '-ist', correct: 'der' },
+  { word: 'Motor', suffix: '-or', correct: 'der' },
+  { word: 'Dozent', suffix: '-ent', correct: 'der' },
+  { word: 'Patient', suffix: '-ent', correct: 'der' },
+  { word: 'Musiker', suffix: '-er', correct: 'der' },
+  { word: 'Student', suffix: '-ent', correct: 'der' },
+  // Neuter
+  { word: 'Mädchen', suffix: '-chen', correct: 'das' },
+  { word: 'Brötchen', suffix: '-chen', correct: 'das' },
+  { word: 'Märchen', suffix: '-chen', correct: 'das' },
+  { word: 'Häuschen', suffix: '-chen', correct: 'das' },
+  { word: 'Bäumchen', suffix: '-chen', correct: 'das' },
+  { word: 'Töpfchen', suffix: '-chen', correct: 'das' },
+  { word: 'Hemdchen', suffix: '-chen', correct: 'das' },
+  { word: 'Lämmchen', suffix: '-chen', correct: 'das' },
+
+  { word: 'Fräulein', suffix: '-lein', correct: 'das' },
+  { word: 'Kindlein', suffix: '-lein', correct: 'das' },
+  { word: 'Hauslein', suffix: '-lein', correct: 'das' },
+  { word: 'Mäuslein', suffix: '-lein', correct: 'das' },
+
+  { word: 'Museum', suffix: '-um', correct: 'das' },
+  { word: 'Datum', suffix: '-um', correct: 'das' },
+  { word: 'Stadium', suffix: '-ium', correct: 'das' },
+  { word: 'Medium', suffix: '-ium', correct: 'das' },
+  { word: 'Genus', suffix: '-us', correct: 'das' },
+  { word: 'Menü', suffix: '-ü', correct: 'das' },
+  { word: 'Büro', suffix: '-o', correct: 'das' },
+  { word: 'Auto', suffix: '-o', correct: 'das' },
+
+  { word: 'Gebirge', suffix: '-ge', correct: 'das' },
+  { word: 'Getränk', suffix: '-ge', correct: 'das' },
+  { word: 'Gedicht', suffix: '-ge', correct: 'das' },
+  { word: 'Gesicht', suffix: '-ge', correct: 'das' },
+  { word: 'Gemüse', suffix: '-ge', correct: 'das' },
+  { word: 'Geflügel', suffix: '-ge', correct: 'das' },
+
+  // Other suffix-patterns (not always 100% but clear tendencies)
+  { word: 'Lehrer', suffix: '-er', correct: 'der' },
+  { word: 'Bäcker', suffix: '-er', correct: 'der' },
+  { word: 'Richter', suffix: '-er', correct: 'der' },
+  { word: 'Schüler', suffix: '-er', correct: 'der' },
+
+  // Feminine (common -in ending for female persons)
+  { word: 'Lehrerin', suffix: '-in', correct: 'die' },
+  { word: 'Ärztin', suffix: '-in', correct: 'die' },
+  { word: 'Schülerin', suffix: '-in', correct: 'die' },
+  { word: 'Patientin', suffix: '-in', correct: 'die' },
+
+  // More feminine
+  { word: 'Adresse', suffix: '-e', correct: 'die' },
+  { word: 'Rose', suffix: '-e', correct: 'die' },
+  { word: 'Tasche', suffix: '-e', correct: 'die' },
+  { word: 'Straße', suffix: '-e', correct: 'die' },
+
+  // Masculine -ismus
+  { word: 'Feminismus', suffix: '-ismus', correct: 'der' },
+  { word: 'Optimismus', suffix: '-ismus', correct: 'der' },
+
+  // Neuter -ment
+  { word: 'Management', suffix: '-ment', correct: 'das' },
+  { word: 'Instrument', suffix: '-ment', correct: 'das' },
+
+  // Masculine -ismus/-ist (usually masculine ideology/people group suffixes)
+  { word: 'Tourist', suffix: '-ist', correct: 'der' },
+  { word: 'Kommunist', suffix: '-ist', correct: 'der' },
+  { word: 'Journalismus', suffix: '-ismus', correct: 'der' },
+
+  // Feminine -ur/-tät
+  { word: 'Kultur', suffix: '-ur', correct: 'die' },
+  { word: 'Natur', suffix: '-ur', correct: 'die' },
+  { word: 'Universität', suffix: '-tät', correct: 'die' },
+  { word: 'Qualität', suffix: '-tät', correct: 'die' },
+];
+
+
+  const dragDropData = [
+  { word: 'Tisch', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Fenster', correct: 'das' },
+  { word: 'Hund', correct: 'der' },
+  { word: 'Katze', correct: 'die' },
+  { word: 'Kind', correct: 'das' },
+  { word: 'Vater', correct: 'der' },
+  { word: 'Mutter', correct: 'die' },
+  { word: 'Baby', correct: 'das' },
+  { word: 'Stuhl', correct: 'der' },
+  { word: 'Lampe', correct: 'die' },
+  { word: 'Buch', correct: 'das' },
+  { word: 'Baum', correct: 'der' },
+  { word: 'Straße', correct: 'die' },
+  { word: 'Auto', correct: 'das' },
+  { word: 'Schrank', correct: 'der' },
+  { word: 'Uhr', correct: 'die' },
+  { word: 'Haus', correct: 'das' },
+  { word: 'Stift', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Bett', correct: 'das' },
+  { word: 'Lehrer', correct: 'der' },
+  { word: 'Lehrerin', correct: 'die' },
+  { word: 'Mädchen', correct: 'das' },
+  { word: 'Sohn', correct: 'der' },
+  { word: 'Tochter', correct: 'die' },
+  { word: 'Brot', correct: 'das' },
+  { word: 'Computer', correct: 'der' },
+  { word: 'Zeitung', correct: 'die' },
+  { word: 'Radio', correct: 'das' },
+  { word: 'Kühlschrank', correct: 'der' },
+  { word: 'Tasche', correct: 'die' },
+  { word: 'Bild', correct: 'das' },
+  { word: 'Sturm', correct: 'der' },
+  { word: 'Bluse', correct: 'die' },
+  { word: 'Kind', correct: 'das' },
+  { word: 'Apfel', correct: 'der' },
+  { word: 'Gabel', correct: 'die' },
+  { word: 'Fenster', correct: 'das' },
+  { word: 'Brief', correct: 'der' },
+  { word: 'Mauer', correct: 'die' },
+  { word: 'Ei', correct: 'das' },
+  { word: 'Schüler', correct: 'der' },
+  { word: 'Frau', correct: 'die' },
+  { word: 'Werkzeug', correct: 'das' },
+  { word: 'Arzt', correct: 'der' },
+  { word: 'Freundin', correct: 'die' },
+  { word: 'Spielzeug', correct: 'das' },
+  { word: 'König', correct: 'der' },
+  { word: 'Welt', correct: 'die' },
+  { word: 'Märchen', correct: 'das' },
+  { word: 'Fluss', correct: 'der' },
+  { word: 'Blätter', correct: 'die' },
+  { word: 'Mädchen', correct: 'das' },
+  { word: 'Berg', correct: 'der' },
+  { word: 'Brille', correct: 'die' },
+  { word: 'Schiff', correct: 'das' },
+  { word: 'Käfig', correct: 'der' },
+  { word: 'Tomate', correct: 'die' },
+  { word: 'Hotel', correct: 'das' },
+  { word: 'Baum', correct: 'der' },
+  { word: 'Wolke', correct: 'die' },
+  { word: 'Telefon', correct: 'das' },
+  { word: 'Tag', correct: 'der' },
+  { word: 'Türe', correct: 'die' },
+  { word: 'Fahrrad', correct: 'das' },
+  { word: 'Löffel', correct: 'der' },
+  { word: 'Tür', correct: 'die' },
+  { word: 'Auto', correct: 'das' },
+  { word: 'Vogel', correct: 'der' },
+  { word: 'Nase', correct: 'die' },
+  { word: 'Buch', correct: 'das' },
+  { word: 'Kaffee', correct: 'der' },
+  { word: 'Wand', correct: 'die' },
+  { word: 'Problem', correct: 'das' },
+  { word: 'Ofen', correct: 'der' },
+  { word: 'Milch', correct: 'die' },
+  { word: 'Zimmer', correct: 'das' },
+  { word: 'See', correct: 'der' },
+  { word: 'Weise', correct: 'die' },
+  { word: 'Kleid', correct: 'das' },
+  { word: 'Wind', correct: 'der' },
+  { word: 'Idee', correct: 'die' },
+  { word: 'Papier', correct: 'das' },
+  { word: 'Hund', correct: 'der' },
+  { word: 'Biene', correct: 'die' },
+  { word: 'Feld', correct: 'das' },
+  { word: 'Garten', correct: 'der' },
+  { word: 'Farben', correct: 'die' },
+  { word: 'Bett', correct: 'das' },
+  { word: 'Mond', correct: 'der' },
+  { word: 'Tasse', correct: 'die' },
+  { word: 'Schwein', correct: 'das' },
+  { word: 'Fisch', correct: 'der' },
+  { word: 'Nacht', correct: 'die' },
+  { word: 'Seil', correct: 'das' },
+  { word: 'Boden', correct: 'der' },
+  { word: 'Ente', correct: 'die' },
+  { word: 'Leben', correct: 'das' },
+  { word: 'Stift', correct: 'der' },
+  { word: 'Gabel', correct: 'die' },
+  { word: 'Wasser', correct: 'das' },
+  { word: 'Kopf', correct: 'der' },
+  { word: 'Familie', correct: 'die' },
+  { word: 'Spiel', correct: 'das' },
+  { word: 'Berg', correct: 'der' },
+  { word: 'Hand', correct: 'die' },
+  { word: 'Herz', correct: 'das' },
+  { word: 'Löffel', correct: 'der' },
+  { word: 'Küche', correct: 'die' },
+  { word: 'Brot', correct: 'das' },
+  { word: 'Wald', correct: 'der' },
+  { word: 'Treppe', correct: 'die' },
+  { word: 'Feuer', correct: 'das' },
+  { word: 'Raum', correct: 'der' },
+  { word: 'Kerze', correct: 'die' },
+  { word: 'Fenster', correct: 'das' },
+  { word: 'Führer', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Bild', correct: 'das' },
+  { word: 'Sessel', correct: 'der' },
+  { word: 'Tafel', correct: 'die' },
+  { word: 'Mädchen', correct: 'das' },
+  { word: 'Stein', correct: 'der' },
+  { word: 'Zeit', correct: 'die' },
+  { word: 'Auto', correct: 'das' },
+  { word: 'Lehrer', correct: 'der' },
+  { word: 'Karte', correct: 'die' },
+  { word: 'Lied', correct: 'das' },
+  { word: 'Weg', correct: 'der' },
+  { word: 'Glas', correct: 'das' },
+  { word: 'Leiter', correct: 'die' },
+  { word: 'Magazin', correct: 'das' },
+  { word: 'Junge', correct: 'der' },
+  { word: 'Nadel', correct: 'die' },
+  { word: 'Tier', correct: 'das' },
+  { word: 'Garten', correct: 'der' },
+  { word: 'Rose', correct: 'die' },
+  { word: 'Messer', correct: 'das' },
+  { word: 'Hut', correct: 'der' },
+  { word: 'Kette', correct: 'die' },
+  { word: 'Büro', correct: 'das' },
+  { word: 'Ring', correct: 'der' },
+  { word: 'Arbeit', correct: 'die' },
+  { word: 'Student', correct: 'der' },
+  { word: 'Lehrbuch', correct: 'das' },
+  { word: 'Stift', correct: 'der' },
+  { word: 'Hose', correct: 'die' },
+  { word: 'Mädchen', correct: 'das' },
+  { word: 'Lehrer', correct: 'der' },
+  { word: 'Straße', correct: 'die' },
+  { word: 'Papier', correct: 'das' },
+  { word: 'Baum', correct: 'der' },
+  { word: 'Lampe', correct: 'die' },
+  { word: 'Telefon', correct: 'das' },
+  { word: 'Tisch', correct: 'der' },
+  { word: 'Küche', correct: 'die' },
+  { word: 'Kino', correct: 'das' },
+  { word: 'Schrank', correct: 'der' },
+  { word: 'Wand', correct: 'die' },
+  { word: 'Mädchen', correct: 'das' },
+  { word: 'Wald', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Märchen', correct: 'das' },
+  { word: 'Zug', correct: 'der' },
+  { word: 'Rechnung', correct: 'die' },
+  { word: 'Buch', correct: 'das' },
+  { word: 'Löffel', correct: 'der' },
+  { word: 'Post', correct: 'die' },
+  { word: 'Spiel', correct: 'das' },
+  { word: 'Witz', correct: 'der' },
+  { word: 'Tor', correct: 'das' },
+  { word: 'Fenster', correct: 'das' },
+  { word: 'Teller', correct: 'der' },
+  { word: 'Uhr', correct: 'die' },
+  { word: 'Bett', correct: 'das' },
+  { word: 'Hund', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Bier', correct: 'das' },
+  { word: 'Zahn', correct: 'der' },
+  { word: 'Gitarre', correct: 'die' },
+  { word: 'Ei', correct: 'das' },
+  { word: 'Korb', correct: 'der' },
+  { word: 'Tasche', correct: 'die' },
+  { word: 'Kind', correct: 'das' },
+  { word: 'Sohn', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Buch', correct: 'das' },
+  { word: 'Wecker', correct: 'der' },
+  { word: 'Leiter', correct: 'die' },
+  { word: 'Flugzeug', correct: 'das' },
+  { word: 'Apfel', correct: 'der' },
+  { word: 'Schwester', correct: 'die' },
+  { word: 'Fenster', correct: 'das' },
+  { word: 'Bruder', correct: 'der' },
+  { word: 'Kerze', correct: 'die' },
+  { word: 'Büro', correct: 'das' },
+  { word: 'Wald', correct: 'der' },
+  { word: 'Freundin', correct: 'die' },
+  { word: 'Meer', correct: 'das' },
+  { word: 'Markt', correct: 'der' },
+  { word: 'Küche', correct: 'die' },
+  { word: 'Kind', correct: 'das' },
+  { word: 'Stuhl', correct: 'der' },
+  { word: 'Seife', correct: 'die' },
+  { word: 'Mädchen', correct: 'das' },
+  { word: 'Ofen', correct: 'der' },
+  { word: 'Zunge', correct: 'die' },
+  { word: 'Zimmer', correct: 'das' },
+  { word: 'Löffel', correct: 'der' },
+  { word: 'Lampe', correct: 'die' },
+  { word: 'Bier', correct: 'das' },
+  { word: 'Mond', correct: 'der' },
+  { word: 'Nacht', correct: 'die' },
+  { word: 'Bett', correct: 'das' },
+  { word: 'Fisch', correct: 'der' },
+  { word: 'Straße', correct: 'die' },
+  { word: 'Magazin', correct: 'das' },
+  { word: 'Tag', correct: 'der' },
+  { word: 'Banane', correct: 'die' },
+  { word: 'Auto', correct: 'das' },
+  { word: 'Boden', correct: 'der' },
+  { word: 'Hand', correct: 'die' },
+  { word: 'Ei', correct: 'das' },
+  { word: 'Vater', correct: 'der' },
+  { word: 'Mutter', correct: 'die' },
+  { word: 'Buch', correct: 'das' },
+  { word: 'Freund', correct: 'der' },
+  { word: 'Nase', correct: 'die' },
+  { word: 'Kind', correct: 'das' },
+  { word: 'Apfel', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Zimmer', correct: 'das' },
+  { word: 'Onkel', correct: 'der' },
+  { word: 'Bohne', correct: 'die' },
+  { word: 'Brot', correct: 'das' },
+  { word: 'Stuhl', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Mädchen', correct: 'das' },
+  { word: 'Vogel', correct: 'der' },
+  { word: 'Küche', correct: 'die' },
+  { word: 'Bett', correct: 'das' },
+  { word: 'Wagen', correct: 'der' },
+  { word: 'Biene', correct: 'die' },
+  { word: 'Fenster', correct: 'das' },
+  { word: 'Brief', correct: 'der' },
+  { word: 'Seife', correct: 'die' },
+  { word: 'Kind', correct: 'das' },
+  { word: 'Fisch', correct: 'der' },
+  { word: 'Tasche', correct: 'die' },
+  { word: 'Auto', correct: 'das' },
+  { word: 'Kaffee', correct: 'der' },
+  { word: 'Straße', correct: 'die' },
+  { word: 'Papier', correct: 'das' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Buch', correct: 'das' },
+  { word: 'Lehrer', correct: 'der' },
+  { word: 'Müll', correct: 'der' },
+  { word: 'Maus', correct: 'die' },
+  { word: 'Wasser', correct: 'das' },
+  { word: 'Raum', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Baby', correct: 'das' },
+  { word: 'Berg', correct: 'der' },
+  { word: 'Arbeit', correct: 'die' },
+  { word: 'Zimmer', correct: 'das' },
+  { word: 'Ring', correct: 'der' },
+  { word: 'Straße', correct: 'die' },
+  { word: 'Hund', correct: 'der' },
+  { word: 'Gabel', correct: 'die' },
+  { word: 'Schaf', correct: 'das' },
+  { word: 'König', correct: 'der' },
+  { word: 'Uhr', correct: 'die' },
+  { word: 'Mädchen', correct: 'das' },
+  { word: 'Königin', correct: 'die' },
+  { word: 'Heft', correct: 'das' },
+  { word: 'Stuhl', correct: 'der' },
+  { word: 'Tasse', correct: 'die' },
+  { word: 'Bett', correct: 'das' },
+  { word: 'Vater', correct: 'der' },
+  { word: 'Mutter', correct: 'die' },
+  { word: 'Bild', correct: 'das' },
+  { word: 'Freund', correct: 'der' },
+  { word: 'Familie', correct: 'die' },
+  { word: 'Kind', correct: 'das' },
+  { word: 'Student', correct: 'der' },
+  { word: 'Lamp', correct: 'die' },
+  { word: 'Kino', correct: 'das' },
+  { word: 'Berg', correct: 'der' },
+  { word: 'Blume', correct: 'die' },
+  { word: 'Haus', correct: 'das' },
+  { word: 'Baum', correct: 'der' },
+  { word: 'Sonne', correct: 'die' },
+  { word: 'Fenster', correct: 'das' },
+  { word: 'Koffer', correct: 'der' },
+  { word: 'Tasche', correct: 'die' },
+  { word: 'Bett', correct: 'das' },
+  { word: 'Onkel', correct: 'der' },
+  { word: 'Biene', correct: 'die' },
+  { word: 'Auto', correct: 'das' },
+  { word: 'Genie', correct: 'das' }, 
+  // ...continue the same structure up to 500 entries
+];
+
+
+    // Custom Words
+    let customWords = JSON.parse(localStorage.getItem('customWords')) || [];
+
+    // Quiz Game
+    let currentQuizQuestion = 0;
+    let quizScore = 0;
+
+    document.querySelector('.start-quiz').addEventListener('click', () => {
+      document.getElementById('quiz-modal').classList.remove('hidden');
+      loadQuizQuestion();
+    });
+
+    function loadQuizQuestion() {
+      const questions = [...quizData, ...customWords];
+      if (questions.length === 0) {
+        document.getElementById('quiz-question').textContent = "Keine Wörter verfügbar";
+        document.getElementById('quiz-options').innerHTML = '';
+        document.getElementById('quiz-next').classList.add('hidden');
+        return;
+      }
+
+      const current = questions[currentQuizQuestion % questions.length];
+      document.getElementById('quiz-question').textContent = current.word;
+      
+      const optionsContainer = document.getElementById('quiz-options');
+      optionsContainer.innerHTML = '';
+      
+      // Shuffle options
+      const shuffledOptions = [...current.options].sort(() => Math.random() - 0.5);
+      
+      shuffledOptions.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'game-option bg-gray-100 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors';
+        btn.textContent = option;
+        btn.addEventListener('click', () => checkQuizAnswer(option, current.correct));
+        optionsContainer.appendChild(btn);
+      });
+      
+      document.getElementById('quiz-feedback').textContent = '';
+      document.getElementById('quiz-next').classList.add('hidden');
+    }
+
+    function checkQuizAnswer(selected, correct) {
+      const options = document.querySelectorAll('#quiz-options button');
+      options.forEach(option => {
+        option.disabled = true;
+        if (option.textContent === correct) {
+          option.classList.add('correct');
+        } else if (option.textContent === selected && selected !== correct) {
+          option.classList.add('incorrect');
+        }
+      });
+
+      if (selected === correct) {
+        document.getElementById('quiz-feedback').textContent = 'Richtig! 🎉';
+        document.getElementById('quiz-feedback').className = 'text-green-600 text-center font-medium mb-6';
+        quizScore++;
+        document.getElementById('quiz-score').textContent = quizScore;
+        createConfetti();
+      } else {
+        document.getElementById('quiz-feedback').textContent = `Falsch! Der richtige Artikel ist "${correct}".`;
+        document.getElementById('quiz-feedback').className = 'text-red-600 text-center font-medium mb-6';
+      }
+      
+      document.getElementById('quiz-next').classList.remove('hidden');
+    }
+
+    document.getElementById('quiz-next').addEventListener('click', () => {
+      currentQuizQuestion++;
+      loadQuizQuestion();
+    });
+
+    // Flashcards Game
+    let currentFlashcard = 0;
+
+    document.querySelector('.start-flashcards').addEventListener('click', () => {
+      document.getElementById('flashcards-modal').classList.remove('hidden');
+      loadFlashcard();
+    });
+
+    function loadFlashcard() {
+      const cards = [...flashcardData, ...customWords.map(word => ({
+        front: word.word,
+        back: `${word.correct} ${word.word}`
+      }))];
+
+      if (cards.length === 0) {
+        document.getElementById('flashcard-front').textContent = "Keine Karten verfügbar";
+        document.getElementById('flashcard-back').textContent = "Füge Karten hinzu";
+        return;
+      }
+
+      const card = cards[currentFlashcard % cards.length];
+      document.getElementById('flashcard-front').textContent = card.front;
+      document.getElementById('flashcard-back').textContent = card.back;
+      document.getElementById('flashcards-modal').querySelector('.flashcard').classList.remove('flipped');
+    }
+
+    document.getElementById('flashcard-flip').addEventListener('click', () => {
+      document.getElementById('flashcards-modal').querySelector('.flashcard').classList.toggle('flipped');
+    });
+
+    document.getElementById('flashcard-next').addEventListener('click', () => {
+      currentFlashcard++;
+      loadFlashcard();
+    });
+
+    document.getElementById('flashcard-prev').addEventListener('click', () => {
+      currentFlashcard = (currentFlashcard - 1 + flashcardData.length + customWords.length) % (flashcardData.length + customWords.length);
+      loadFlashcard();
+    });
+
+    // Suffix Match Game
+    let currentSuffixQuestion = 0;
+    let suffixScore = 0;
+
+    document.querySelector('.start-suffix-match').addEventListener('click', () => {
+      document.getElementById('suffix-match-modal').classList.remove('hidden');
+      loadSuffixMatchQuestion();
+    });
+
+    function loadSuffixMatchQuestion() {
+      const questions = [...suffixMatchData];
+      if (questions.length === 0) {
+        document.getElementById('suffix-match-word').textContent = "Keine Fragen verfügbar";
+        document.getElementById('suffix-match-options').innerHTML = '';
+        document.getElementById('suffix-match-next').classList.add('hidden');
+        return;
+      }
+
+      const current = questions[currentSuffixQuestion % questions.length];
+      document.getElementById('suffix-match-word').textContent = `Endung: "${current.suffix}" (z.B. ${current.word})`;
+      
+      const optionsContainer = document.getElementById('suffix-match-options');
+      optionsContainer.innerHTML = '';
+      
+      // Shuffle options
+      const options = ['der', 'die', 'das'];
+      const shuffledOptions = [...options].sort(() => Math.random() - 0.5);
+      
+      shuffledOptions.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'game-option bg-gray-100 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors';
+        btn.textContent = option;
+        btn.addEventListener('click', () => checkSuffixMatchAnswer(option, current.correct));
+        optionsContainer.appendChild(btn);
+      });
+      
+      document.getElementById('suffix-match-feedback').textContent = '';
+      document.getElementById('suffix-match-next').classList.add('hidden');
+    }
+
+    function checkSuffixMatchAnswer(selected, correct) {
+      const options = document.querySelectorAll('#suffix-match-options button');
+      options.forEach(option => {
+        option.disabled = true;
+        if (option.textContent === correct) {
+          option.classList.add('correct');
+        } else if (option.textContent === selected && selected !== correct) {
+          option.classList.add('incorrect');
+        }
+      });
+
+      if (selected === correct) {
+        document.getElementById('suffix-match-feedback').textContent = 'Richtig! 🎉';
+        document.getElementById('suffix-match-feedback').className = 'text-green-600 text-center font-medium mb-6';
+        suffixScore++;
+        document.getElementById('suffix-match-score').textContent = suffixScore;
+        createConfetti();
+      } else {
+        document.getElementById('suffix-match-feedback').textContent = `Falsch! Der richtige Artikel ist "${correct}".`;
+        document.getElementById('suffix-match-feedback').className = 'text-red-600 text-center font-medium mb-6';
+      }
+      
+      document.getElementById('suffix-match-next').classList.remove('hidden');
+    }
+
+    document.getElementById('suffix-match-next').addEventListener('click', () => {
+      currentSuffixQuestion++;
+      loadSuffixMatchQuestion();
+    });
+
+ 
+// Drag & Drop Game
+let currentDragDropWords = [];
+let dragDropScore = 0;
+let dragDropTotal = 0;
+let draggedWord = null;
+
+document.querySelector('.start-drag-drop').addEventListener('click', () => {
+  document.getElementById('drag-drop-modal').classList.remove('hidden');
+  loadDragDropGame();
+});
+
+function loadDragDropGame() {
+  // Clear feedback
+  document.getElementById('drag-drop-feedback').textContent = '';
+  document.getElementById('drag-drop-feedback').className = 'text-center font-medium mb-6';
+  
+  // Shuffle words and select 6
+  const shuffledWords = [...dragDropData].sort(() => Math.random() - 0.5).slice(0, 6);
+  currentDragDropWords = shuffledWords;
+  dragDropTotal = shuffledWords.length;
+  dragDropScore = 0;
+  
+  document.getElementById('drag-drop-score').textContent = dragDropScore;
+  document.getElementById('drag-drop-total').textContent = dragDropTotal;
+  
+  const wordsContainer = document.getElementById('drag-drop-words');
+  wordsContainer.innerHTML = '';
+  
+  shuffledWords.forEach(word => {
+    const wordEl = document.createElement('div');
+    wordEl.className = 'draggable bg-white px-4 py-3 rounded-lg shadow-sm border border-gray-200 text-center cursor-move';
+    wordEl.textContent = word.word;
+    wordEl.draggable = true;
+    wordEl.dataset.word = word.word;
+    wordEl.dataset.correct = word.correct;
+    
+    wordEl.addEventListener('dragstart', dragStart);
+    
+    wordsContainer.appendChild(wordEl);
+  });
+  
+  // Setup dropzones
+  const dropzones = document.querySelectorAll('.dropzone');
+  dropzones.forEach(zone => {
+    zone.innerHTML = `<h3 class="font-bold ${zone.dataset.article === 'der' ? 'text-blue-800' : zone.dataset.article === 'die' ? 'text-pink-800' : 'text-green-800'}">${zone.dataset.article.toUpperCase()}</h3>`;
+    
+    zone.addEventListener('dragover', dragOver);
+    zone.addEventListener('drop', drop);
+    zone.addEventListener('dragleave', dragLeave);
+  });
+}
+
+function dragStart(e) {
+  draggedWord = e.target;
+  e.dataTransfer.setData('text/plain', e.target.dataset.word);
+  setTimeout(() => {
+    e.target.classList.add('dragging');
+  }, 0);
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  e.target.classList.add('highlight');
+}
+
+function dragLeave(e) {
+  e.preventDefault();
+  e.target.classList.remove('highlight');
+}
+
+function drop(e) {
+  e.preventDefault();
+  e.target.classList.remove('highlight');
+  
+  if (!draggedWord) return;
+  
+  const article = e.target.dataset.article;
+  const correct = draggedWord.dataset.correct;
+  
+  // Create a new element for the dropped word
+  const droppedWord = document.createElement('div');
+  droppedWord.className = 'dropped-word mt-2 px-2 py-1 bg-white rounded';
+  droppedWord.textContent = draggedWord.textContent;
+  
+  // Append the word to the dropzone
+  e.target.appendChild(droppedWord);
+  
+  // Remove the original draggable element
+  draggedWord.remove();
+  
+  if (article === correct) {
+    dragDropScore++;
+    document.getElementById('drag-drop-score').textContent = dragDropScore;
+    document.getElementById('drag-drop-feedback').textContent = 'Richtig! 🎉';
+    document.getElementById('drag-drop-feedback').className = 'text-green-600 text-center font-medium mb-6';
+    createConfetti();
+  } else {
+    document.getElementById('drag-drop-feedback').textContent = `Falsch! "${draggedWord.textContent}" ist "${correct}".`;
+    document.getElementById('drag-drop-feedback').className = 'text-red-600 text-center font-medium mb-6';
+  }
+  
+  draggedWord.classList.remove('dragging');
+  draggedWord = null;
+  
+  // Check if all words are placed
+  if (document.querySelectorAll('.draggable').length === 0) {
+    document.getElementById('drag-drop-feedback').textContent = `Glückwunsch! Du hast ${dragDropScore} von ${dragDropTotal} richtig!`;
+    document.getElementById('drag-drop-feedback').className = 'text-purple-600 text-center font-medium mb-6';
+  }
+}
+
+document.getElementById('drag-drop-next').addEventListener('click', loadDragDropGame);
+
+
+    // Quick Quiz Game
+    let quickQuizScore = 0;
+    let quizTimer;
+    let timeLeft = 30;
+
+    document.querySelector('.start-quick-quiz').addEventListener('click', () => {
+      document.getElementById('quick-quiz-modal').classList.remove('hidden');
+      startQuickQuiz();
+    });
+
+    function startQuickQuiz() {
+  // Clear any existing timer
+  if (quizTimer) {
+    clearInterval(quizTimer);
+  }
+  
+  quickQuizScore = 0;
+  timeLeft = 30;
+  document.getElementById('quick-quiz-score').textContent = quickQuizScore;
+  document.getElementById('quiz-timer').textContent = timeLeft;
+  
+  // Start timer
+  quizTimer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('quiz-timer').textContent = timeLeft;
+    
+    if (timeLeft <= 0) {
+      clearInterval(quizTimer);
+      document.getElementById('quick-quiz-feedback').textContent = `Zeit abgelaufen! Dein Punktestand: ${quickQuizScore}`;
+      document.getElementById('quick-quiz-feedback').className = 'text-purple-600 text-center font-medium mb-6';
+    }
+  }, 1000);
+  
+  loadQuickQuizQuestion();
+}
+
+    function loadQuickQuizQuestion() {
+      if (timeLeft <= 0) return;
+      
+      const questions = [...quizData, ...suffixMatchData.map(item => ({
+        word: item.word,
+        correct: item.correct,
+        options: ['der', 'die', 'das']
+      }))];
+      
+      const current = questions[Math.floor(Math.random() * questions.length)];
+      document.getElementById('quick-quiz-question').textContent = current.word;
+      
+      const optionsContainer = document.getElementById('quick-quiz-options');
+      optionsContainer.innerHTML = '';
+      
+      // Shuffle options
+      const shuffledOptions = [...current.options].sort(() => Math.random() - 0.5);
+      
+      shuffledOptions.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'game-option bg-gray-100 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors';
+        btn.textContent = option;
+        btn.addEventListener('click', () => checkQuickQuizAnswer(option, current.correct));
+        optionsContainer.appendChild(btn);
+      });
+      
+      document.getElementById('quick-quiz-feedback').textContent = '';
+    }
+
+    function checkQuickQuizAnswer(selected, correct) {
+      if (timeLeft <= 0) return;
+      
+      const options = document.querySelectorAll('#quick-quiz-options button');
+      options.forEach(option => {
+        option.disabled = true;
+        if (option.textContent === correct) {
+          option.classList.add('correct');
+        } else if (option.textContent === selected && selected !== correct) {
+          option.classList.add('incorrect');
+        }
+      });
+
+      if (selected === correct) {
+        document.getElementById('quick-quiz-feedback').textContent = 'Richtig! 🎉';
+        document.getElementById('quick-quiz-feedback').className = 'text-green-600 text-center font-medium mb-6';
+        quickQuizScore++;
+        document.getElementById('quick-quiz-score').textContent = quickQuizScore;
+        createConfetti();
+      } else {
+        document.getElementById('quick-quiz-feedback').textContent = `Falsch! Der richtige Artikel ist "${correct}".`;
+        document.getElementById('quick-quiz-feedback').className = 'text-red-600 text-center font-medium mb-6';
+      }
+      
+      // Load next question after short delay
+      setTimeout(loadQuickQuizQuestion, 1000);
+    }
+
+    // Custom Words
+    document.querySelector('.start-custom-words').addEventListener('click', () => {
+      document.getElementById('custom-words-section').classList.remove('hidden');
+      updateCustomWordsList();
+    });
+
+    document.getElementById('add-custom-word').addEventListener('click', () => {
+      const word = document.getElementById('custom-word').value.trim();
+      const article = document.getElementById('custom-article').value;
+      
+      if (word) {
+        customWords.push({
+          word: word,
+          correct: article,
+          options: ['der', 'die', 'das']
+        });
+        
+        localStorage.setItem('customWords', JSON.stringify(customWords));
+        document.getElementById('custom-word').value = '';
+        updateCustomWordsList();
+      }
+    });
+
+    function updateCustomWordsList() {
+  const list = document.getElementById('custom-words-list');
+  
+  if (!customWords || customWords.length === 0) {
+    list.innerHTML = '<p class="text-gray-500 text-sm">Noch keine Wörter hinzugefügt</p>' +
+                    '<div class="translation">Hələ heç bir söz əlavə edilməyib</div>';
+    document.getElementById('practice-custom-words').classList.add('hidden');
+    return;
+  }
+  
+  list.innerHTML = '<ul class="space-y-2">' + 
+    customWords.map(word => 
+      `<li class="flex justify-between items-center">
+        <span>${word.correct} ${word.word}</span>
+        <button class="delete-word text-red-500" data-word="${word.word}">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </li>`
+    ).join('') + '</ul>';
+  
+  document.getElementById('practice-custom-words').classList.remove('hidden');
+  lucide.createIcons();
+  
+  // Add event listeners to delete buttons
+  document.querySelectorAll('.delete-word').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const wordToDelete = e.currentTarget.getAttribute('data-word');
+      customWords = customWords.filter(word => word.word !== wordToDelete);
+      localStorage.setItem('customWords', JSON.stringify(customWords));
+      updateCustomWordsList();
+    });
+  });
+}
+
+    document.getElementById('practice-custom-words').addEventListener('click', () => {
+      if (customWords.length > 0) {
+        document.getElementById('quiz-modal').classList.remove('hidden');
+        currentQuizQuestion = 0;
+        quizScore = 0;
+        document.getElementById('quiz-score').textContent = '0';
+        loadQuizQuestion();
+      }
+    });
+
+    // Close Modals
+    document.querySelectorAll('.close-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.fixed').classList.add('hidden');
+        // Clear timer if quick quiz is active
+        if (quizTimer) {
+          clearInterval(quizTimer);
+          quizTimer = null;
+        }
+      });
+    });
+
+    // Text-to-Speech
+    document.querySelectorAll('.voice-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const flashcard = e.currentTarget.closest('.flashcard-front, .flashcard-back');
+    const text = flashcard.querySelector('div').textContent.trim();
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'de-DE';
+      speechSynthesis.speak(utterance);
+    }
+  });
+});
+
+    // Confetti Effect
+    function createConfetti() {
+      const colors = ['#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#ffff00'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 5000);
+      }
+    }
+
+    // Initialize
+    updateCustomWordsList();
+  </script>
+</body>
+</html>
